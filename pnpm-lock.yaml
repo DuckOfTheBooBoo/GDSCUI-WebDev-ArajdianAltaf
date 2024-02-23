@@ -11,6 +11,9 @@ dependencies:
   animate.css:
     specifier: ^4.1.1
     version: 4.1.1
+  gdscui-todo-app:
+    specifier: 'link:'
+    version: 'link:'
   primevue:
     specifier: ^3.48.1
     version: 3.48.1(vue@3.4.19)

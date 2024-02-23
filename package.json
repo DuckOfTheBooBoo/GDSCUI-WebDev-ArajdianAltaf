@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/vue": "^2.1.1",
     "animate.css": "^4.1.1",
+    "gdscui-todo-app": "link:",
     "primevue": "^3.48.1",
     "vue": "^3.4.19"
   },
