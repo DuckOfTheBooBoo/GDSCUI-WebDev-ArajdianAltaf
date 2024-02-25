@@ -6,10 +6,13 @@ import Tag from 'primevue/tag'
 import SplitButton from 'primevue/splitbutton'
 import { useConfirm } from 'primevue/useconfirm'
 import ConfirmDialog from 'primevue/confirmdialog'
-import { useDialog } from 'primevue/usedialog'
-import TaskDetail from './TaskDetail.vue'
 import Dialog from 'primevue/dialog'
-import ScrollPanel from 'primevue/scrollpanel'
+import Card from 'primevue/card'
+import InputText from 'primevue/inputtext'
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import Textarea from 'primevue/textarea'
+import Dropdown from 'primevue/dropdown'
 
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
@@ -45,10 +48,24 @@ const otherOptions = [
 ]
 
 const taskDetailDialogVisible = ref(false)
+const taskEditDialogVisible = ref(false)
+const priorities = ref([
+    { label: 'Low', value: 'low'},
+    { label: 'Medium', value: 'medium'},
+    { label: 'High', value: 'high'}
+]);
+const selectedPriority = ref('')
+const groups = [
+    {name: 'General', color: 'bg-red-500'},
+    {name: 'Work', color: 'bg-blue-500'},
+    {name: 'School', color: 'bg-yellow-400'},
+]
+
 </script>
 
 <template>
     <!-- TODO: Make it responsive -->
+    <!-- Detail -->
     <Dialog class="!sm:w-[90vw]" :style="{ width: '90vw' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
         v-model:visible="taskDetailDialogVisible" modal>
         <p class="font-bold text-3xl mb-2">{{ title }}</p>
@@ -89,13 +106,68 @@ const taskDetailDialogVisible = ref(false)
         </p>
     </Dialog>
 
+    <!-- Edit -->
+    <Dialog :style="{ width: '90vw' }" v-model:visible="taskEditDialogVisible" modal>
+        <template #container="{ closeCallback }">
+            <Card>
+                <template #title>Edit</template>
+                <template #content>
+                    <div class="flex flex-col gap-2">
+                        <InputGroup>
+                            <InputGroupAddon>
+                                <i class="pi pi-pencil"></i>
+                            </InputGroupAddon>
+                            <InputText placeholder="Task title" />
+                        </InputGroup>
+                        <InputGroup>
+                            <InputGroupAddon>
+                                <i class="pi pi-calendar"></i>
+                            </InputGroupAddon>
+                            <Calendar placeholder="Due date" />
+                        </InputGroup>
+
+                        <Textarea placeholder="Description" autoResize />
+
+                        <p>Priority</p>
+                        <div class="flex justify-center">
+                            <SelectButton v-model="selectedPriority" :options="priorities" optionLabel="label"
+                                optionValue="value" aria-labelledby="custom">
+                                <template #option="slotProps">
+                                    <i :class="slotProps.option.icon"></i>
+                                    <span class="font-bold">
+                                        {{ slotProps.option.label }}
+                                    </span>
+                                </template>
+                            </SelectButton>
+                        </div>
+
+                        <p>Group</p>
+                        <div class="flex justify-center">
+                            <Dropdown placeholder="Select group" :options="groups">
+                                <template #option="slotProps">
+                                    <Tag :class="slotProps.option.color">
+                                        <span>{{ slotProps.option.name }}</span>
+                                    </Tag>
+                                </template>
+                            </Dropdown>
+                        </div>
+                    </div>
+                </template>
+                <template #footer>
+                    <div class="flex flex-row gap-1">
+                        <Button label="Save" severity="info" @click="closeCallback"></Button>
+                        <Button label="Cancel" outlined @click="closeCallback"></Button>
+                    </div>
+                </template>
+            </Card>
+        </template>
+    </Dialog>
     <div v-ripple class="w-full flex flex-row gap-2 shadow-md bg-white shadow-primary-200
-    rounded-xl items-center px-2 py-3 hover:cursor-pointer hover:shadow-md hover:shadow-primary-300 transition-shadow"
-        >
-        <Checkbox v-model="done" :binary="true" />
+    rounded-xl items-center px-2 py-3 hover:cursor-pointer hover:shadow-md hover:shadow-primary-300 transition-shadow">
+        <Checkbox class="mr-1" v-model="done" :binary="true" />
 
         <div class="flex flex-col flex-1 gap-1">
-            <p class="font-bold text-base sm:text-xl" @click="taskDetailDialogVisible = true" >{{ title }}</p>
+            <p class="font-bold text-base sm:text-xl" @click="taskDetailDialogVisible = true">{{ title }}</p>
             <!-- Chips -->
             <div class="flex gap-1">
                 <!-- Group -->
@@ -139,13 +211,13 @@ const taskDetailDialogVisible = ref(false)
         <MqResponsive target="md+">
             <div class="">
                 <div class="flex gap-1 flex-col sm:flex-row">
-                    <Button outlined icon="pi pi-pencil" size="small"></Button>
+                    <Button @click="taskEditDialogVisible = true" outlined icon="pi pi-pencil" size="small"></Button>
                     <Button outlined icon="pi pi-trash" @click="deleteDialog" severity="danger" size="small"></Button>
                 </div>
             </div>
         </MqResponsive>
         <MqResponsive target="sm-">
-            <SplitButton class="self-end" label="Edit" size="small" :model="otherOptions">
+            <SplitButton class="self-end" label="Edit" :model="otherOptions" @click="taskEditDialogVisible = true">
                 <i class="pi pi-pencil"></i>
             </SplitButton>
         </MqResponsive>

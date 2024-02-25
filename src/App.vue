@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TaskGroup from './components/TaskGroup.vue'
-import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
 
 // @ts-ignore
