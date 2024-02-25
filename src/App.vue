@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import TaskGroup from './components/TaskGroup.vue'
+import Dialog from 'primevue/dialog';
+import ConfirmDialog from 'primevue/confirmdialog';
 
 // @ts-ignore
 const data = [{
@@ -12,6 +14,7 @@ const data = [{
 </script>
 
 <template>
+    <ConfirmDialog></ConfirmDialog>
     <div class="flex flex-col w-[100vw] h-[100vh] items-center">
         <div class="w-full max-w-3xl flex flex-col justify-center">
             <h1>Tasks</h1>
