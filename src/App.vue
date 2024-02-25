@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import TaskGroup from './components/TaskGroup.vue'
+
+// @ts-ignore
+const data = [{
+    taskId: "928822",
+    title: "Buy groceries",
+    type: "Shopping",
+    priority: 1
+}]
+
 </script>
 
 <template>
-    <div class="m-5">
-        <h1>Tasks</h1>
-        <TaskGroup />
-        <h1>Completed Task</h1>
+    <div class="flex flex-col w-[100vw] h-[100vh] items-center">
+        <div class="w-full max-w-3xl flex flex-col justify-center">
+            <h1>Tasks</h1>
+            <TaskGroup />
+        </div>
     </div>
 </template>
 

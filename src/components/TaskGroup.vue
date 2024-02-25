@@ -3,8 +3,11 @@ import TaskItem from './TaskItem.vue'
 </script>
 
 <template>
-    <div class="card">
-        <TaskItem :title="'This is title example'" />
+    <div class="mx-3 flex flex-col gap-2">
+        <TaskItem 
+            :title="'Task Title'"
+            :priority=3
+        />
     </div>
 </template>
 
