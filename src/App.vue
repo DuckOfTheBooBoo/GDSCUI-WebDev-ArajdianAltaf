@@ -58,60 +58,117 @@ const filterOptions = ref([
 
     <div class="flex flex-col w-[100vw] h-[100vh] items-center">
         <div class="w-full max-w-3xl flex flex-col justify-center gap-1">
-            <!-- TODO: Make this responsive -->
-            <Toolbar class="">
-                <!-- Group Filter -->
-                <template #start>
-                    <Dropdown :options="groupFilter" placeholder="Group Filter">
-                        <template #value="slotProps">
-                            <div v-if="slotProps.value" class="">
-                                <Tag :class="slotProps.value.color">
-                                    <span>{{ slotProps.value.name }}</span>
-                                </Tag>
-                            </div>
-                            <span v-else>
-                                {{ slotProps.placeholder }}
-                            </span>
-                        </template>
-                        <template #option="slotProps">
-                            <Tag :class="slotProps.option.color">
-                                <span>{{ slotProps.option.name }}</span>
-                            </Tag>
-                        </template>
-                    </Dropdown>
-                </template>
-
-                <!-- Search filter -->
-                <template #center>
+            <MqResponsive target="sm-">
+                <div class="flex flex-col m-1 p-3 gap-2 rounded-md bg-surface-50 border border-surface-200">
+                    <!-- SEARCH BAR -->
                     <InputGroup>
                         <InputGroupAddon>
                             <i class="pi pi-search"></i>
                         </InputGroupAddon>
                         <InputText placeholder="Search Task" />
                     </InputGroup>
-                </template>
 
-                <!-- Sort by filter -->
-                <template #end>
-                    <CascadeSelect :options="filterOptions" optionLabel="label" optionGroupLabel="name"
-                        :optionGroupChildren="['options']" placeholder="Sort by">
-                        <template #option="slotProps">
-                            <div class="w-full">
-                                <span>{{ slotProps.option.name }}</span>
-                                <div class="flex items-center">
-                                    <span class="flex-2">
-                                        {{ slotProps.option.label }}
-                                        <i v-if="slotProps.option.label === 'Ascending'" class="pi pi-chevron-up"> </i>
-                                        <i v-else-if="slotProps.option.label === 'Descending'" class="pi pi-chevron-down">
-                                        </i>
-                                    </span>
+                    <div class="flex flex-row justify-between gap-2">
+                        <!-- GROUP FILTER -->
+                        <Dropdown class="flex-1" :options="groupFilter" placeholder="Group Filter">
+                            <template #value="slotProps">
+                                <div v-if="slotProps.value" class="">
+                                    <Tag :class="slotProps.value.color">
+                                        <span>{{ slotProps.value.name }}</span>
+                                    </Tag>
                                 </div>
-                            </div>
-                        </template>
-                    </CascadeSelect>
-                </template>
-            </Toolbar>
-            <InlineMessage severity="info">Click task title to show details</InlineMessage>
+                                <span v-else>
+                                    {{ slotProps.placeholder }}
+                                </span>
+                            </template>
+                            <template #option="slotProps">
+                                <Tag :class="slotProps.option.color">
+                                    <span>{{ slotProps.option.name }}</span>
+                                </Tag>
+                            </template>
+                        </Dropdown>
+
+
+                        <!-- SORT FILTER -->
+                        <CascadeSelect class="flex-1" :options="filterOptions" optionLabel="label" optionGroupLabel="name"
+                            :optionGroupChildren="['options']" placeholder="Sort by">
+                            <template #option="slotProps">
+                                <div class="w-full">
+                                    <span>{{ slotProps.option.name }}</span>
+                                    <div class="flex items-center">
+                                        <span class="flex-2">
+                                            {{ slotProps.option.label }}
+                                            <i v-if="slotProps.option.label === 'Ascending'" class="pi pi-chevron-up"> </i>
+                                            <i v-else-if="slotProps.option.label === 'Descending'"
+                                                class="pi pi-chevron-down">
+                                            </i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </template>
+                        </CascadeSelect>
+                    </div>
+
+                </div>
+            </MqResponsive>
+
+            <MqResponsive target="md+">
+                <Toolbar class="">
+                    <!-- Group Filter -->
+                    <template #start>
+                        <Dropdown :options="groupFilter" placeholder="Group Filter">
+                            <template #value="slotProps">
+                                <div v-if="slotProps.value" class="">
+                                    <Tag :class="slotProps.value.color">
+                                        <span>{{ slotProps.value.name }}</span>
+                                    </Tag>
+                                </div>
+                                <span v-else>
+                                    {{ slotProps.placeholder }}
+                                </span>
+                            </template>
+                            <template #option="slotProps">
+                                <Tag :class="slotProps.option.color">
+                                    <span>{{ slotProps.option.name }}</span>
+                                </Tag>
+                            </template>
+                        </Dropdown>
+                    </template>
+
+                    <!-- Search filter -->
+                    <template #center>
+                        <InputGroup>
+                            <InputGroupAddon>
+                                <i class="pi pi-search"></i>
+                            </InputGroupAddon>
+                            <InputText placeholder="Search Task" />
+                        </InputGroup>
+                    </template>
+
+                    <!-- Sort by filter -->
+                    <template #end>
+                        <CascadeSelect :options="filterOptions" optionLabel="label" optionGroupLabel="name"
+                            :optionGroupChildren="['options']" placeholder="Sort by">
+                            <template #option="slotProps">
+                                <div class="w-full">
+                                    <span>{{ slotProps.option.name }}</span>
+                                    <div class="flex items-center">
+                                        <span class="flex-2">
+                                            {{ slotProps.option.label }}
+                                            <i v-if="slotProps.option.label === 'Ascending'" class="pi pi-chevron-up"> </i>
+                                            <i v-else-if="slotProps.option.label === 'Descending'"
+                                                class="pi pi-chevron-down">
+                                            </i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </template>
+                        </CascadeSelect>
+                    </template>
+                </Toolbar>
+            </MqResponsive>
+
+            <InlineMessage class="mx-3" severity="info">Click task title to show details</InlineMessage>
 
             <!-- TASK  -->
             <TaskGroup />
