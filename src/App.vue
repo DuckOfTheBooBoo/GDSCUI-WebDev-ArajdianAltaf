@@ -8,6 +8,7 @@ import CascadeSelect from 'primevue/cascadeselect';
 import InputText from 'primevue/inputtext';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
+import TaskForm from './components/TaskForm.vue';
 
 import { ref } from 'vue';
 // @ts-ignore
@@ -42,13 +43,20 @@ const filterOptions = ref([
     }
 ])
 
+const addNewTaskDialogVisible = ref(false)
+
 </script>
 
 <template>
+    <Dialog v-model:visible="addNewTaskDialogVisible" modal>
+        <template #container="{closeCallback}">
+            <TaskForm :close-callback="closeCallback" />
+        </template>
+    </Dialog>
     <!-- Add Button -->
     <MqResponsive target="sm-">
         <div class="absolute bottom-0 right-0">
-            <Button class="m-5 shadow-3xl " size="large" rounded>
+            <Button @click="addNewTaskDialogVisible=true" class="m-5 shadow-3xl " size="large" rounded>
                 <i class="pi pi-plus py-3 px-2"></i>
             </Button>
         </div>
