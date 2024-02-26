@@ -73,58 +73,8 @@ const groups = [
 
     <!-- Edit -->
     <Dialog :style="{ width: '90vw' }" v-model:visible="taskEditDialogVisible" modal>
-        <template #container="{ closeCallback }">
-            <Card>
-                <template #title>Edit</template>
-                <template #content>
-                    <div class="flex flex-col gap-2">
-                        <InputGroup>
-                            <InputGroupAddon>
-                                <i class="pi pi-pencil"></i>
-                            </InputGroupAddon>
-                            <InputText placeholder="Task title" />
-                        </InputGroup>
-                        <InputGroup>
-                            <InputGroupAddon>
-                                <i class="pi pi-calendar"></i>
-                            </InputGroupAddon>
-                            <Calendar placeholder="Due date" />
-                        </InputGroup>
-
-                        <Textarea placeholder="Description" autoResize />
-
-                        <p>Priority</p>
-                        <div class="flex justify-center">
-                            <SelectButton v-model="selectedPriority" :options="priorities" optionLabel="label"
-                                optionValue="value" aria-labelledby="custom">
-                                <template #option="slotProps">
-                                    <i :class="slotProps.option.icon"></i>
-                                    <span class="font-bold">
-                                        {{ slotProps.option.label }}
-                                    </span>
-                                </template>
-                            </SelectButton>
-                        </div>
-
-                        <p>Group</p>
-                        <div class="flex justify-center">
-                            <Dropdown placeholder="Select group" :options="groups">
-                                <template #option="slotProps">
-                                    <Tag :class="slotProps.option.color">
-                                        <span>{{ slotProps.option.name }}</span>
-                                    </Tag>
-                                </template>
-                            </Dropdown>
-                        </div>
-                    </div>
-                </template>
-                <template #footer>
-                    <div class="flex flex-row gap-1">
-                        <Button label="Save" severity="info" @click="closeCallback"></Button>
-                        <Button label="Cancel" outlined @click="closeCallback"></Button>
-                    </div>
-                </template>
-            </Card>
+        <template #container="{closeCallback}">
+            <TaskForm :close-callback="closeCallback" />
         </template>
     </Dialog>
     <div v-ripple class="w-full flex flex-row gap-2 shadow-md bg-white shadow-primary-200
