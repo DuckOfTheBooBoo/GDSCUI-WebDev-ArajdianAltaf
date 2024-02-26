@@ -13,7 +13,8 @@ const props = defineProps<{
     title?: string,
     description?: string,
     dueDate?: Date,
-    closeCallback: VoidFunction
+    closeCallback: VoidFunction,
+    action: string
 }>()
 const selectedPriority = ref()
 
@@ -74,7 +75,8 @@ minDate.value.setDate(Date.now())
         </template>
         <template #footer>
             <div class="flex flex-row gap-1">
-                <Button label="Save" severity="info" @click="closeCallback"></Button>
+                <Button v-if="action === 'edit'" label="Save" severity="info" @click="closeCallback"></Button>
+                <Button v-else-if="action === 'add'" label="Add" @click="closeCallback"></Button>
                 <Button label="Cancel" outlined @click="closeCallback"></Button>
             </div>
         </template>

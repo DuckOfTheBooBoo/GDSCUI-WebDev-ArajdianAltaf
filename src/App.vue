@@ -50,7 +50,7 @@ const addNewTaskDialogVisible = ref(false)
 <template>
     <Dialog v-model:visible="addNewTaskDialogVisible" modal>
         <template #container="{closeCallback}">
-            <TaskForm :close-callback="closeCallback" />
+            <TaskForm :close-callback="closeCallback" action="add" />
         </template>
     </Dialog>
     <!-- Add Button -->

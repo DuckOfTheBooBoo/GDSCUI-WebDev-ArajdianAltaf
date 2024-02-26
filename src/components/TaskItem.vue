@@ -76,7 +76,7 @@ const groups = [
     <!-- Edit -->
     <Dialog :style="{ width: '90vw' }" v-model:visible="taskEditDialogVisible" modal>
         <template #container="{closeCallback}">
-            <TaskForm :close-callback="closeCallback" />
+            <TaskForm :close-callback="closeCallback" action="edit" />
         </template>
     </Dialog>
     
