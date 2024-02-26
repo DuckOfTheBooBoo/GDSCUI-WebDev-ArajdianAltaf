@@ -27,7 +27,8 @@ const groups = [
     {name: 'Work', color: 'bg-blue-500'},
     {name: 'School', color: 'bg-yellow-400'},
 ]
-
+const minDate = ref(new Date())
+minDate.value.setDate(Date.now())
 </script>
 
 <template>
@@ -41,12 +42,8 @@ const groups = [
                     </InputGroupAddon>
                     <InputText placeholder="Task title" />
                 </InputGroup>
-                <InputGroup>
-                    <InputGroupAddon>
-                        <i class="pi pi-calendar"></i>
-                    </InputGroupAddon>
-                    <Calendar placeholder="Due date" />
-                </InputGroup>
+
+                <Calendar :minDate="minDate" :manualInput="false" showButtonBar showIcon iconDisplay="input" placeholder="Due date"/>
 
                 <Textarea placeholder="Description" autoResize />
 
