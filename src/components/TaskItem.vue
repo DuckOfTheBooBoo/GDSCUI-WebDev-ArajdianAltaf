@@ -13,6 +13,8 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Textarea from 'primevue/textarea'
 import Dropdown from 'primevue/dropdown'
+import TaskForm from './TaskForm.vue'
+import TaskDetail from './TaskDetail.vue'
 
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
@@ -77,6 +79,7 @@ const groups = [
             <TaskForm :close-callback="closeCallback" />
         </template>
     </Dialog>
+    
     <div v-ripple class="w-full flex flex-row gap-2 shadow-md bg-white shadow-primary-200
     rounded-xl items-center px-2 py-3 hover:cursor-pointer hover:shadow-md hover:shadow-primary-300 transition-shadow">
         <Checkbox class="mr-1" v-model="done" :binary="true" />
