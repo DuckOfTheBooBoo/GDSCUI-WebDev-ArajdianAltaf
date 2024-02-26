@@ -29,12 +29,13 @@ const groups = [
     {name: 'School', color: 'bg-yellow-400'},
 ]
 const minDate = ref(new Date())
+const formTitle = props.action.charAt(0).toUpperCase() + props.action.slice(1)
 minDate.value.setDate(Date.now())
 </script>
 
 <template>
     <Card>
-        <template #title>Edit</template>
+        <template #title>{{ formTitle }}</template>
         <template #content>
             <div class="flex flex-col gap-2">
                 <InputGroup>
