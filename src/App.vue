@@ -5,7 +5,13 @@ import Toolbar from 'primevue/toolbar';
 import InlineMessage from 'primevue/inlinemessage';
 import Dropdown from 'primevue/dropdown';
 import CascadeSelect from 'primevue/cascadeselect';
+import InputText from 'primevue/inputtext';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+
 import { ref } from 'vue';
+// @ts-ignore
+import { MqResponsive } from 'vue3-mq'
 // @ts-ignore
 const data = [{
     taskId: "928822",
@@ -39,7 +45,17 @@ const filterOptions = ref([
 </script>
 
 <template>
+    <!-- Add Button -->
+    <MqResponsive target="sm-">
+        <div class="absolute bottom-0 right-0">
+            <Button class="m-5 shadow-3xl " size="large" rounded>
+                <i class="pi pi-plus py-3 px-2"></i>
+            </Button>
+        </div>
+    </MqResponsive>
+
     <ConfirmDialog></ConfirmDialog>
+
     <div class="flex flex-col w-[100vw] h-[100vh] items-center">
         <div class="w-full max-w-3xl flex flex-col justify-center gap-1">
             <Toolbar class="flex flex-row">
@@ -85,6 +101,8 @@ const filterOptions = ref([
                 </template>
             </Toolbar>
             <InlineMessage severity="info">Click task title to show details</InlineMessage>
+
+            <!-- TASK  -->
             <TaskGroup />
 
         </div>
