@@ -1,7 +1,7 @@
-import Task from "@/models/Task.ts";
-import Group from "@/models/Group.ts";
-import Priority from "@/models/Priority.ts";
-import TaskFormData from "@/models/TaskFormData.ts";
+import Task from "../models/Task";
+import Group from "../models/Group";
+import Priority from "../models/Priority";
+import TaskFormData from "../models/TaskFormData";
 
 export default class TodoService {
   private static tasks: Task[] = [];
