@@ -9,20 +9,15 @@ import InputText from 'primevue/inputtext';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import TaskForm from './components/TaskForm.vue';
-import TodoService from './services/TodoService'
+import {useTodoStore} from './stores/todoStores'
 
 import { ref } from 'vue';
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
-// @ts-ignore
-const data = [{
-    taskId: "928822",
-    title: "Buy groceries",
-    type: "Shopping",
-    priority: 1
-}]
 
-const groups = TodoService.getAllGroups()
+const todoStore = useTodoStore()
+
+const groups = todoStore.getAllGroups()
 
 const filterOptions = ref([
     {

@@ -15,11 +15,13 @@ import Textarea from 'primevue/textarea'
 import Dropdown from 'primevue/dropdown'
 import TaskForm from './TaskForm.vue'
 import TaskDetail from './TaskDetail.vue'
-import TodoService from '../services/TodoService'
 import Group from '../models/Group'
+import { useTodoStore } from '../stores/todoStores'
 
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
+
+const todoStore = useTodoStore()
 
 const confirm = useConfirm()
 
@@ -34,6 +36,7 @@ const deleteDialog = () => {
 }
 
 const props = defineProps<{
+    taskId: number,
     title: string,
     // subTask: rray,
     dueDate: Date,
@@ -52,21 +55,10 @@ const otherOptions = [
     }
 ]
 
-const taskGroup: Group = TodoService.getGroup(props.group)!
+const taskGroup: Group = todoStore.getGroup(props.group)!
 
 const taskDetailDialogVisible = ref(false)
 const taskEditDialogVisible = ref(false)
-// const priorities = ref([
-//     { label: 'Low', value: 'low'},
-//     { label: 'Medium', value: 'medium'},
-//     { label: 'High', value: 'high'}
-// ]);
-// const selectedPriority = ref('')
-// const groups = [
-//     {name: 'General', color: 'bg-red-500'},
-//     {name: 'Work', color: 'bg-blue-500'},
-//     {name: 'School', color: 'bg-yellow-400'},
-// ]
 
 </script>
 
@@ -81,7 +73,7 @@ const taskEditDialogVisible = ref(false)
     <!-- Edit -->
     <Dialog :style="{ width: '90vw' }" v-model:visible="taskEditDialogVisible" modal>
         <template #container="{closeCallback}">
-            <TaskForm :close-callback="closeCallback" :addNew="false" />
+            <TaskForm :close-callback="closeCallback" :addNew="false" :task-id="taskId" />
         </template>
     </Dialog>
     

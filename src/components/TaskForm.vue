@@ -12,27 +12,30 @@ import * as yup from 'yup'
 import { useForm } from 'vee-validate'
 import Task from '../models/Task';
 import TaskFormData from '../models/TaskFormData';
-import TodoService from '../services/TodoService';
 import Group from '../models/Group';
+import Priority from '../models/Priority';
+import { useTodoStore } from '../stores/todoStores';
 
 const props = defineProps<{
   taskId?: number,
-  title?: string,
-  description?: string,
-  dueDate?: Date,
-  priority?: number,
-  group?: number,
   closeCallback: VoidFunction,
   addNew: boolean // true for add new task, false for edit task
 }>()
 
-const formValues = reactive({
-  title: props.title ? props.title : null,
-  dueDate: props.dueDate ? props.dueDate : null,
-  description: props.description ? props.description : null,
-  priority: props.priority ? props.priority : null,
-  group: props.group ? props.group : null
-})
+const todoStore = useTodoStore()
+
+const task: Task | undefined = todoStore.getTask(props.taskId!)
+
+let formValues = undefined
+if (task) {
+  formValues = reactive({
+    title: task.title ? task.title : null,
+    dueDate: task.dueDate ? task.dueDate : null,
+    description: task.description ? task.description : null,
+    priority: task.priority ? task.priority : null,
+    group: task.group ? task.group : null
+  })
+}
 
 const formSchema = yup.object({
   title: yup.string().min(5, 'Title must be at least 5 characters').required('Title is required'),
@@ -55,14 +58,9 @@ const [description] = defineField('description')
 const [priority] = defineField('priority')
 const [group] = defineField('group')
 
+const priorities: Priority[] = todoStore.getPriorities()
 
-const priorities = ref([
-  { label: 'Low', value: 1 },
-  { label: 'Medium', value: 2 },
-  { label: 'High', value: 3 }
-]);
-
-const groups = TodoService.getAllGroups()
+const groups = todoStore.getAllGroups()
 
 const groupTag = (groupId: number): Group | undefined => {
   return groups.find((group) => group.id === groupId)
@@ -83,11 +81,11 @@ const onSubmit = handleSubmit((values) => {
       group: values.group!,
     }
 
-    const newTaskId = TodoService.addTask(task)
+    const newTaskId = todoStore.addTask(task)
     console.log(`Successfully added new task id: ${newTaskId}`)
   } else {
     // Edit task
-    const oldTask: Task = TodoService.getTask(props.taskId!)!
+    const oldTask: Task = todoStore.getTask(props.taskId!)!
     const updatedTask: Task = {
       ...oldTask,
       title: values.title!,
@@ -97,7 +95,7 @@ const onSubmit = handleSubmit((values) => {
       group: values.group!,
     }
 
-    TodoService.updateTask(updatedTask)
+    todoStore.updateTask(updatedTask)
     console.log(`Successfully updated task ${props.taskId}`)
   }
 
@@ -132,7 +130,6 @@ const onSubmit = handleSubmit((values) => {
             <SelectButton v-model="priority" :options="priorities" optionLabel="label" optionValue="value"
               :invalid="Boolean(errors.priority)">
               <template #option="slotProps">
-                <i :class="slotProps.option.icon"></i>
                 <span class="font-bold">
                   {{ slotProps.option.name }}
                 </span>

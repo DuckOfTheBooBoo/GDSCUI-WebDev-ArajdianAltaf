@@ -10,13 +10,15 @@ import ConfirmationService from 'primevue/confirmationservice'
 import DialogService from 'primevue/dialogservice'
 // @ts-ignore
 import { Vue3Mq } from "vue3-mq"
+import {createPinia} from 'pinia'
 
 const app = createApp(App)
+app.use(createPinia())
 app.use(ConfirmationService)
 app.use(DialogService)
 app.use(Vue3Mq)
 app.use(PrimeVue, {
-    unstyled: true,
+    unstyled: false,
     pt: Lara,
     ripple: true
 })
