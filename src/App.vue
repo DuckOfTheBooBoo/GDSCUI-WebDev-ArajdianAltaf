@@ -9,6 +9,7 @@ import InputText from 'primevue/inputtext';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import TaskForm from './components/TaskForm.vue';
+import TodoService from './services/TodoService'
 
 import { ref } from 'vue';
 // @ts-ignore
@@ -21,10 +22,7 @@ const data = [{
     priority: 1
 }]
 
-const groupFilter = ref([
-    { name: 'General', color: 'bg-red-500' },
-    { name: 'School', color: 'bg-blue-500' }
-])
+const groups = TodoService.getAllGroups()
 
 const filterOptions = ref([
     {
@@ -50,7 +48,7 @@ const addNewTaskDialogVisible = ref(false)
 <template>
     <Dialog v-model:visible="addNewTaskDialogVisible" modal>
         <template #container="{closeCallback}">
-            <TaskForm :close-callback="closeCallback" action="add" />
+            <TaskForm :close-callback="closeCallback" :addNew="true" />
         </template>
     </Dialog>
     <!-- Add Button -->
@@ -78,10 +76,10 @@ const addNewTaskDialogVisible = ref(false)
 
                     <div class="flex flex-row justify-between gap-2">
                         <!-- GROUP FILTER -->
-                        <Dropdown class="flex-1" :options="groupFilter" placeholder="Group Filter">
+                        <Dropdown class="flex-1" :options="groups" placeholder="Group Filter">
                             <template #value="slotProps">
                                 <div v-if="slotProps.value" class="">
-                                    <Tag :class="slotProps.value.color">
+                                    <Tag :style="`background-color: ${slotProps.value.color}`">
                                         <span>{{ slotProps.value.name }}</span>
                                     </Tag>
                                 </div>
@@ -90,7 +88,7 @@ const addNewTaskDialogVisible = ref(false)
                                 </span>
                             </template>
                             <template #option="slotProps">
-                                <Tag :class="slotProps.option.color">
+                                <Tag :style="`background-color: ${slotProps.option.color}`">
                                     <span>{{ slotProps.option.name }}</span>
                                 </Tag>
                             </template>
@@ -124,10 +122,10 @@ const addNewTaskDialogVisible = ref(false)
                 <Toolbar class="">
                     <!-- Group Filter -->
                     <template #start>
-                        <Dropdown :options="groupFilter" placeholder="Group Filter">
+                        <Dropdown :options="groups" placeholder="Group Filter">
                             <template #value="slotProps">
                                 <div v-if="slotProps.value" class="">
-                                    <Tag :class="slotProps.value.color">
+                                    <Tag :style="`background-color: ${slotProps.value.color}`">
                                         <span>{{ slotProps.value.name }}</span>
                                     </Tag>
                                 </div>
@@ -136,7 +134,7 @@ const addNewTaskDialogVisible = ref(false)
                                 </span>
                             </template>
                             <template #option="slotProps">
-                                <Tag :class="slotProps.option.color">
+                                <Tag :style="`background-color: ${slotProps.option.color}`">
                                     <span>{{ slotProps.option.name }}</span>
                                 </Tag>
                             </template>
