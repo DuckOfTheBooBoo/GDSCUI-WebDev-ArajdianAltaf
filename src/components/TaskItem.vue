@@ -15,6 +15,8 @@ import Textarea from 'primevue/textarea'
 import Dropdown from 'primevue/dropdown'
 import TaskForm from './TaskForm.vue'
 import TaskDetail from './TaskDetail.vue'
+import TodoService from '../services/TodoService'
+import Group from '../models/Group'
 
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
@@ -31,15 +33,16 @@ const deleteDialog = () => {
     })
 }
 
-defineProps({
-    title: String,
-    subTask: Array,
+const props = defineProps<{
+    title: string,
+    // subTask: rray,
     dueDate: Date,
-    groupType: String,
-    priority: Number
-})
+    group: number,
+    priority: number,
+    isCompletedProp: boolean
+}>()
 
-const done = ref(false)
+const isCompleted = ref(props.isCompletedProp)
 
 const otherOptions = [
     {
@@ -49,19 +52,21 @@ const otherOptions = [
     }
 ]
 
+const taskGroup: Group = TodoService.getGroup(props.group)!
+
 const taskDetailDialogVisible = ref(false)
 const taskEditDialogVisible = ref(false)
-const priorities = ref([
-    { label: 'Low', value: 'low'},
-    { label: 'Medium', value: 'medium'},
-    { label: 'High', value: 'high'}
-]);
-const selectedPriority = ref('')
-const groups = [
-    {name: 'General', color: 'bg-red-500'},
-    {name: 'Work', color: 'bg-blue-500'},
-    {name: 'School', color: 'bg-yellow-400'},
-]
+// const priorities = ref([
+//     { label: 'Low', value: 'low'},
+//     { label: 'Medium', value: 'medium'},
+//     { label: 'High', value: 'high'}
+// ]);
+// const selectedPriority = ref('')
+// const groups = [
+//     {name: 'General', color: 'bg-red-500'},
+//     {name: 'Work', color: 'bg-blue-500'},
+//     {name: 'School', color: 'bg-yellow-400'},
+// ]
 
 </script>
 
@@ -76,20 +81,20 @@ const groups = [
     <!-- Edit -->
     <Dialog :style="{ width: '90vw' }" v-model:visible="taskEditDialogVisible" modal>
         <template #container="{closeCallback}">
-            <TaskForm :close-callback="closeCallback" action="edit" />
+            <TaskForm :close-callback="closeCallback" :addNew="false" />
         </template>
     </Dialog>
     
     <div v-ripple class="w-full flex flex-row gap-2 shadow-md bg-white shadow-primary-200
     rounded-xl items-center px-2 py-3 hover:cursor-pointer hover:shadow-md hover:shadow-primary-300 transition-shadow">
-        <Checkbox class="mr-1" v-model="done" :binary="true" />
+        <Checkbox class="mr-1" v-model="isCompleted" :binary="true" />
 
         <div class="flex flex-col flex-1 gap-1">
             <p class="font-bold text-base sm:text-xl" @click="taskDetailDialogVisible = true">{{ title }}</p>
             <!-- Chips -->
             <div class="flex gap-1">
                 <!-- Group -->
-                <Tag value="General" rounded>
+                <Tag :value="taskGroup.name" :class="`bg-[${taskGroup.color}]`" rounded>
                     <span class="text-xs">General</span>
                 </Tag>
 
@@ -106,7 +111,7 @@ const groups = [
 
                 <!-- Due Date -->
                 <Tag icon="pi pi-calendar" class="!bg-orange-600" rounded>
-                    <span class="text-xs">09/08/2005</span>
+                    <span class="text-xs">{{ dueDate.toLocaleString('en-GB') }}</span>
                 </Tag>
             </div>
         </div>
