@@ -94,7 +94,7 @@ const taskEditDialogVisible = ref(false)
             <!-- Chips -->
             <div class="flex gap-1">
                 <!-- Group -->
-                <Tag :value="taskGroup.name" :class="`bg-[${taskGroup.color}]`" rounded>
+                <Tag :value="taskGroup.name" :style="`background-color: ${taskGroup.color};`" rounded>
                     <span class="text-xs">General</span>
                 </Tag>
 

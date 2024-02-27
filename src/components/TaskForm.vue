@@ -147,14 +147,14 @@ const onSubmit = handleSubmit((values) => {
               :invalid="Boolean(errors.group)">
               <template #value="slotProps">
                 <div v-if="slotProps.value" class="">
-                  <Tag :class="groupTag(slotProps.value)?.color">
+                  <Tag :style="`background-color: ${groupTag(slotProps.value)?.color};`">
                     <span>{{ groupTag(slotProps.value)?.name }}</span>
                   </Tag>
                 </div>
                 <span v-else>{{ slotProps.placeholder }}</span>
               </template>
               <template #option="slotProps">
-                <Tag :class="slotProps.option.color">
+                <Tag :style="`background-color: ${slotProps.option.color};`">
                   <span>{{ slotProps.option.name }}</span>
                 </Tag>
               </template>
