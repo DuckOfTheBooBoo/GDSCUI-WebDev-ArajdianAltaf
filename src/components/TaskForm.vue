@@ -134,7 +134,7 @@ const onSubmit = handleSubmit((values) => {
               <template #option="slotProps">
                 <i :class="slotProps.option.icon"></i>
                 <span class="font-bold">
-                  {{ slotProps.option.label }}
+                  {{ slotProps.option.name }}
                 </span>
               </template>
             </SelectButton>
