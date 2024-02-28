@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, Ref } from 'vue'
 import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
@@ -16,10 +16,16 @@ import Dropdown from 'primevue/dropdown'
 import TaskForm from './TaskForm.vue'
 import TaskDetail from './TaskDetail.vue'
 import Group from '../models/Group'
+import Task from '../models/Task'
 import { useTodoStore } from '../stores/todoStores'
+import { reactive } from 'vue'
 
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
+
+const props = defineProps<{
+    taskId: number
+}>()
 
 const todoStore = useTodoStore()
 
@@ -30,22 +36,10 @@ const deleteDialog = () => {
         group: 'headless',
         message: 'Are you sure you want to delete this task?',
         header: 'Confirmation',
-        accept: () => { },
-        reject: () => { }
+        accept: () => todoStore.removeTask(props.taskId),
+        reject: () => {}
     })
 }
-
-const props = defineProps<{
-    taskId: number,
-    title: string,
-    // subTask: rray,
-    dueDate: Date,
-    group: number,
-    priority: number,
-    isCompletedProp: boolean
-}>()
-
-const isCompleted = ref(props.isCompletedProp)
 
 const otherOptions = [
     {
@@ -55,7 +49,19 @@ const otherOptions = [
     }
 ]
 
-const taskGroup: Group = todoStore.getGroup(props.group)!
+let task: Task = reactive({} as Task)
+if (task) {
+    task = todoStore.getTask(props.taskId)!
+} else {
+    console.log('Task is undefined', task)
+}
+
+const taskGroup: Ref<Group> = ref({} as Group)
+taskGroup.value =  todoStore.getGroup(task.group)!
+
+if (!taskGroup.value) {
+    console.log('taskGroup is undefined', taskGroup.value)
+}
 
 const taskDetailDialogVisible = ref(false)
 const taskEditDialogVisible = ref(false)
@@ -67,7 +73,7 @@ const taskEditDialogVisible = ref(false)
     <!-- Detail -->
     <Dialog class="!sm:w-[90vw]" :style="{ width: '90vw' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
         v-model:visible="taskDetailDialogVisible" modal>
-        <TaskDetail></TaskDetail>
+        <TaskDetail :task-id="taskId"></TaskDetail>
     </Dialog>
 
     <!-- Edit -->
@@ -79,31 +85,32 @@ const taskEditDialogVisible = ref(false)
     
     <div v-ripple class="w-full flex flex-row gap-2 shadow-md bg-white shadow-primary-200
     rounded-xl items-center px-2 py-3 hover:cursor-pointer hover:shadow-md hover:shadow-primary-300 transition-shadow">
-        <Checkbox class="mr-1" v-model="isCompleted" :binary="true" />
+        <Checkbox class="mr-1" v-model="task.completed" :binary="true" />
 
         <div class="flex flex-col flex-1 gap-1">
-            <p class="font-bold text-base sm:text-xl" @click="taskDetailDialogVisible = true">{{ title }}</p>
+            <p class="font-bold text-base sm:text-xl" @click="taskDetailDialogVisible = true">{{ task?.title }}</p>
             <!-- Chips -->
             <div class="flex gap-1">
                 <!-- Group -->
-                <Tag :value="taskGroup.name" :style="`background-color: ${taskGroup.color};`" rounded>
-                    <span class="text-xs">General</span>
+                <!-- TODO: Force re render this -->
+                <Tag :style="`background-color: ${taskGroup?.color};`" rounded>
+                    <span class="text-xs">{{ taskGroup?.name }}</span>
                 </Tag>
 
                 <!-- Priority -->
-                <Tag v-if="priority === 1" severity="info" rounded>
+                <Tag v-if="task?.priority === 1" severity="info" rounded>
                     <span class="text-xs">Low</span>
                 </Tag>
-                <Tag v-else-if="priority === 2" value="Medium" severity="warning" rounded>
+                <Tag v-else-if="task.priority === 2" value="Medium" severity="warning" rounded>
                     <span class="text-xs">Medium</span>
                 </Tag>
-                <Tag v-else-if="priority === 3" value="High" severity="danger" rounded>
+                <Tag v-else-if="task.priority === 3" value="High" severity="danger" rounded>
                     <span class="text-xs">High</span>
                 </Tag>
 
                 <!-- Due Date -->
                 <Tag icon="pi pi-calendar" class="!bg-orange-600" rounded>
-                    <span class="text-xs">{{ dueDate.toLocaleString('en-GB') }}</span>
+                    <span class="text-xs">{{ task?.dueDate.toLocaleDateString('en-GB') }}</span>
                 </Tag>
             </div>
         </div>
