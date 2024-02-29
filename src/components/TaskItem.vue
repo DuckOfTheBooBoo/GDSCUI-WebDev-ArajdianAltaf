@@ -84,7 +84,8 @@ const taskEditDialogVisible = ref(false)
     </Dialog>
     
     <div v-ripple class="w-full flex flex-row gap-2 shadow-md bg-white shadow-primary-200
-    rounded-xl items-center px-2 py-3 hover:cursor-pointer hover:shadow-md hover:shadow-primary-300 transition-shadow">
+    rounded-xl items-center px-2 py-3 hover:cursor-pointer hover:shadow-md hover:shadow-primary-300 transition-shadow
+    hover:z-50 ">
         <Checkbox class="mr-1" v-model="task.completed" :binary="true" />
 
         <div class="flex flex-col flex-1 gap-1">
