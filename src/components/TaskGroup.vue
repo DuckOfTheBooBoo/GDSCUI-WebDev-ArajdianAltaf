@@ -4,8 +4,24 @@ import { ref, onMounted, computed, reactive } from 'vue';
 import Task from '../models/Task'
 import { useTodoStore } from '../stores/todoStores';
 import Filter from '../models/Filter';
+import { useConfirm } from 'primevue/useconfirm';
+import ConfirmDialog from 'primevue/confirmdialog';
+import 'animate.css'
 
 const props: Filter = defineProps<Filter>()
+
+const confirm = useConfirm()
+
+const deleteDialog = (taskId: number): void => {
+    confirm.require({
+        group: 'headless',
+        message: 'Are you sure you want to delete this task?',
+        header: 'Confirmation',
+        accept: () => todoStore.removeTask(taskId),
+        reject: () => { }
+    })
+}
+
 
 let tasks: Task[] = reactive([] as Task[])
 
@@ -23,7 +39,7 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
 
     // Sort if parameter is not null
     if (selectedFilter.sort !== null) {
-        switch(selectedFilter.sort) {
+        switch (selectedFilter.sort) {
             case 'priority-asc': {
                 todoTasks.sort((aTask, bTask) => bTask.priority - aTask.priority).reverse()
                 break
@@ -91,17 +107,60 @@ onMounted(() => {
 </script>
 
 <template>
-    <!-- <Button @click="fetchTasks">Fetch Task</Button> -->
-    <div v-if="tasks.length > 0" class="mx-3 flex flex-col gap-2">
-        <TaskItem v-for="task in filteredTasks"
-            :task-id="task.id"
-            :key="task.id"
-        />
-    </div>
+    <!-- TODO: ConfirmDialog looks terrible in mobile view -->
+    <ConfirmDialog group="headless">
+        <template #container="{ message, acceptCallback, rejectCallback }">
+            <div class="flex flex-col items-center p-5 bg-surface-0 dark:bg-surface-700 rounded-md">
+                <span class="font-bold text-2xl block mb-2 mt-4">{{ message.header }}</span>
+                <p class="mb-0">{{ message.message }}</p>
+                <div class="flex items-center gap-2 mt-4">
+                    <Button label="Delete" severity="danger" @click="acceptCallback"></Button>
+                    <Button label="Cancel" outlined @click="rejectCallback"></Button>
+                </div>
+            </div>
+        </template>
+    </ConfirmDialog>
+
+    <TransitionGroup v-if="tasks.length > 0" name="fade" tag="TaskItem" class="mx-3 flex flex-col gap-2">
+        <TaskItem v-for="task in filteredTasks" :task-id="task.id" :key="task.id" :delete-dialog-func="deleteDialog" />
+    </TransitionGroup>
     <div v-else class="flex justify-center items-center flex-col gap-3">
         <img class="w-64" src="../assets/doge.png" alt="Doge">
         <p class="text-gray-400">Such empty... Create a new task would ya?</p>
     </div>
 </template>
 
-<style scoped></style>
+<!-- <style scoped>
+.container {
+    position: relative;
+    padding: 0;
+}
+
+.item {
+    width: 100%;
+    height: 30px;
+    background-color: #f3f3f3;
+    border: 1px solid #666;
+    box-sizing: border-box;
+}
+
+/* 1. declare transition */
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* 2. declare enter from and leave to state */
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    transform: scaleY(0.01) translate(30px, 0);
+}
+
+/* 3. ensure leaving items are taken out of layout flow so that moving
+      animations can be calculated correctly. */
+.fade-leave-active {
+    position: absolute;
+}
+</style> -->
