@@ -28,7 +28,7 @@ if (!taskGroup.value) {
 </script>
 
 <template>
-    <p class="font-bold text-3xl mb-2">Task Detail</p>
+    <p class="font-bold text-3xl mb-2">{{ task.title }}</p>
     <div class="flex gap-1 mb-5">
         <!-- Group -->
         <Tag :style="`background-color: ${taskGroup?.color};`" rounded>
