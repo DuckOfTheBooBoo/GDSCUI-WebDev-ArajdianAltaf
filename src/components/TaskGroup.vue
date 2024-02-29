@@ -8,8 +8,8 @@ import Filter from '../models/Filter';
 const props: Filter = defineProps<Filter>()
 
 let tasks: Task[] = reactive([] as Task[])
-const todoStore = useTodoStore()
 
+const todoStore = useTodoStore()
 
 const fetchTasks = () => {
     console.log('Fetching task...')
@@ -19,21 +19,21 @@ const fetchTasks = () => {
 }
 
 const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
-    let todoTasks = tasks
+    let todoTasks = [...tasks]
 
     // Sort if parameter is not null
     if (selectedFilter.sort !== null) {
         switch(selectedFilter.sort) {
             case 'priority-asc': {
-                todoTasks = tasks.sort((aTask, bTask) => bTask.priority - aTask.priority).reverse()
+                todoTasks.sort((aTask, bTask) => bTask.priority - aTask.priority).reverse()
                 break
             }
             case 'priority-desc': {
-                todoTasks = tasks.sort((aTask, bTask) => bTask.priority - aTask.priority)
+                todoTasks.sort((aTask, bTask) => bTask.priority - aTask.priority)
                 break
             }
             case 'due-asc': {
-                todoTasks = tasks.sort((aTask, bTask) => {
+                todoTasks.sort((aTask, bTask) => {
                     const aTaskUnixTimestamp = Math.floor(aTask.dueDate.getTime() / 1000)
                     const bTaskUnixTimestamp = Math.floor(bTask.dueDate.getTime() / 1000)
                     return bTaskUnixTimestamp - aTaskUnixTimestamp
@@ -41,7 +41,7 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
                 break
             }
             case 'due-desc': {
-                todoTasks = tasks.sort((aTask, bTask) => {
+                todoTasks.sort((aTask, bTask) => {
                     const aTaskUnixTimestamp = Math.floor(aTask.dueDate.getTime() / 1000)
                     const bTaskUnixTimestamp = Math.floor(bTask.dueDate.getTime() / 1000)
                     return bTaskUnixTimestamp - aTaskUnixTimestamp
@@ -49,6 +49,8 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
                 break
             }
         }
+    } else {
+        console.log('Sort is null', todoTasks)
     }
 
     return todoTasks.filter(task => {
@@ -57,19 +59,24 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
             selectedFilter.query !== null
         );
 
+        // Check if theres no active filter
         if (!hasActiveFilter) {
+            console.log('Has no active filter')
             return true
         }
 
-        if (selectedFilter.group !== null && task.group !== selectedFilter.group) {
+        // Check if task.group is equal to selectedFilter.group
+        if ((selectedFilter.group !== null && selectedFilter.group !== 0) && task.group !== selectedFilter.group) {
+            console.log('Group didn\'t match')
             return false
         }
 
-        if (selectedFilter.query !== null) {
-            const regex = new RegExp(selectedFilter.query)
-            return regex.test(task.title)
+        // Check if query is inside task.title
+        if (!task.title.includes(selectedFilter.query!)) {
+            return false
         }
 
+        console.log('All filter passed')
         return true;
     })
 }
@@ -84,7 +91,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Button @click="fetchTasks">Fetch Task</Button>
+    <!-- <Button @click="fetchTasks">Fetch Task</Button> -->
     <div v-if="tasks.length > 0" class="mx-3 flex flex-col gap-2">
         <TaskItem v-for="task in filteredTasks"
             :task-id="task.id"
