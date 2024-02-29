@@ -45,9 +45,9 @@ const filterOptions = ref([
 const getGroupData = (groupId: number): Group | undefined => filterGroups.value.find(group => group.id === groupId)
 
 const selectedFilter: Ref<Filter> = ref({
-    sort: null,
-    group: null,
-    query: null
+    sort: '',
+    group: 0,
+    query: ''
 })
 
 const addNewTaskDialogVisible = ref(false)
