@@ -10,31 +10,45 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import TaskForm from './components/TaskForm.vue';
 import {useTodoStore} from './stores/todoStores'
-
-import { ref } from 'vue';
+import Filter from './models/Filter';
+import Group from './models/Group';
+import { ref, Ref } from 'vue';
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
 
 const todoStore = useTodoStore()
 
 const groups = todoStore.getAllGroups()
-
+const filterGroups = ref([
+    {id: 0, name: 'None', color: '#000000'},
+    ...groups
+])
 const filterOptions = ref([
     {
         name: 'Priority',
         options: [
-            { label: 'Ascending', value: 'priority-asc' },
-            { label: 'Descending', value: 'priority-desc' }
+            { label: 'None',  value: null},
+            { label: 'Priority Ascending', value: 'priority-asc' },
+            { label: 'Priority Descending', value: 'priority-desc' }
         ]
     },
     {
         name: 'Due date',
         options: [
-            { label: 'Ascending', value: 'due-asc' },
-            { label: 'Descending', value: 'due-desc' }
+            {label: 'None',  value: null},
+            { label: 'Due Date Ascending', value: 'due-asc' },
+            { label: 'Due Date Descending', value: 'due-desc' }
         ]
     }
 ])
+
+const getGroupData = (groupId: number): Group | undefined => filterGroups.value.find(group => group.id === groupId)
+
+const selectedFilter: Ref<Filter> = ref({
+    sort: null,
+    group: null,
+    query: null
+})
 
 const addNewTaskDialogVisible = ref(false)
 
@@ -66,16 +80,16 @@ const addNewTaskDialogVisible = ref(false)
                         <InputGroupAddon>
                             <i class="pi pi-search"></i>
                         </InputGroupAddon>
-                        <InputText placeholder="Search Task" />
+                        <InputText placeholder="Search Task" v-model="selectedFilter.query"/>
                     </InputGroup>
 
                     <div class="flex flex-row justify-between gap-2">
                         <!-- GROUP FILTER -->
-                        <Dropdown class="flex-1" :options="groups" placeholder="Group Filter">
+                        <Dropdown v-model="selectedFilter.group" class="flex-1" :options="filterGroups" placeholder="Group Filter" optionValue="id">
                             <template #value="slotProps">
                                 <div v-if="slotProps.value" class="">
-                                    <Tag :style="`background-color: ${slotProps.value.color}`">
-                                        <span>{{ slotProps.value.name }}</span>
+                                    <Tag :style="`background-color: ${getGroupData(slotProps.value)?.color}`">
+                                        <span>{{ getGroupData(slotProps.value)?.name }}</span>
                                     </Tag>
                                 </div>
                                 <span v-else>
@@ -91,8 +105,8 @@ const addNewTaskDialogVisible = ref(false)
 
 
                         <!-- SORT FILTER -->
-                        <CascadeSelect class="flex-1" :options="filterOptions" optionLabel="label" optionGroupLabel="name"
-                            :optionGroupChildren="['options']" placeholder="Sort by">
+                        <CascadeSelect v-model="selectedFilter.sort" class="flex-1" :options="filterOptions" optionLabel="label" optionGroupLabel="name"
+                            :optionGroupChildren="['options']" placeholder="Sort by" optionValue="value">
                             <template #option="slotProps">
                                 <div class="w-full">
                                     <span>{{ slotProps.option.name }}</span>
@@ -117,11 +131,11 @@ const addNewTaskDialogVisible = ref(false)
                 <Toolbar class="">
                     <!-- Group Filter -->
                     <template #start>
-                        <Dropdown :options="groups" placeholder="Group Filter">
+                        <Dropdown v-model="selectedFilter.group" :options="filterGroups" placeholder="Group Filter" optionValue="id">
                             <template #value="slotProps">
                                 <div v-if="slotProps.value" class="">
-                                    <Tag :style="`background-color: ${slotProps.value.color}`">
-                                        <span>{{ slotProps.value.name }}</span>
+                                    <Tag :style="`background-color: ${getGroupData(slotProps.value)?.color}`">
+                                        <span>{{ getGroupData(slotProps.value)?.name }}</span>
                                     </Tag>
                                 </div>
                                 <span v-else>
@@ -142,14 +156,14 @@ const addNewTaskDialogVisible = ref(false)
                             <InputGroupAddon>
                                 <i class="pi pi-search"></i>
                             </InputGroupAddon>
-                            <InputText placeholder="Search Task" />
+                            <InputText placeholder="Search Task" v-model="selectedFilter.query"/>
                         </InputGroup>
                     </template>
 
                     <!-- Sort by filter -->
                     <template #end>
-                        <CascadeSelect :options="filterOptions" optionLabel="label" optionGroupLabel="name"
-                            :optionGroupChildren="['options']" placeholder="Sort by">
+                        <CascadeSelect v-model="selectedFilter.sort" :options="filterOptions" optionLabel="label" optionGroupLabel="name"
+                            :optionGroupChildren="['options']" placeholder="Sort by" optionValue="value">
                             <template #option="slotProps">
                                 <div class="w-full">
                                     <span>{{ slotProps.option.name }}</span>
@@ -172,7 +186,7 @@ const addNewTaskDialogVisible = ref(false)
             <InlineMessage class="mx-3" severity="info">Click task title to show details</InlineMessage>
 
             <!-- TASK  -->
-            <TaskGroup />
+            <TaskGroup :sort="selectedFilter.sort" :query="selectedFilter.query" :group="selectedFilter.group" />
         </div>
     </div>
 </template>
