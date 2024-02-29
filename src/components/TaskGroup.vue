@@ -32,8 +32,9 @@ onMounted(() => {
             :key="task.id"
         />
     </div>
-    <div v-else class="flex justify-center items-center">
-        <p class="text-gray-400 my-10">Such empty... Create a new task would ya?</p>
+    <div v-else class="flex justify-center items-center flex-col gap-3">
+        <img class="w-64" src="../assets/doge.png" alt="Doge">
+        <p class="text-gray-400">Such empty... Create a new task would ya?</p>
     </div>
 </template>
 
