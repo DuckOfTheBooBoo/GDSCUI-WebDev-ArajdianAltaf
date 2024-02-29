@@ -28,16 +28,16 @@ const filterOptions = ref([
         name: 'Priority',
         options: [
             { label: 'None',  value: null},
-            { label: 'Priority Ascending', value: 'priority-asc' },
-            { label: 'Priority Descending', value: 'priority-desc' }
+            { label: 'Priority > Ascending', value: 'priority-asc' },
+            { label: 'Priority > Descending', value: 'priority-desc' }
         ]
     },
     {
         name: 'Due date',
         options: [
-            {label: 'None',  value: null},
-            { label: 'Due Date Ascending', value: 'due-asc' },
-            { label: 'Due Date Descending', value: 'due-desc' }
+            { label: 'None',  value: null},
+            { label: 'Due Date > Ascending', value: 'due-asc'},
+            { label: 'Due Date > Descending', value: 'due-desc'}
         ]
     }
 ])
@@ -73,116 +73,54 @@ const addNewTaskDialogVisible = ref(false)
 
     <div class="flex flex-col w-[100vw] h-[100vh] items-center">
         <div class="w-full max-w-3xl flex flex-col justify-center gap-1">
-            <MqResponsive target="sm-">
-                <div class="flex flex-col m-1 p-3 gap-2 rounded-md bg-surface-50 border border-surface-200">
-                    <!-- SEARCH BAR -->
-                    <InputGroup>
-                        <InputGroupAddon>
-                            <i class="pi pi-search"></i>
-                        </InputGroupAddon>
-                        <InputText placeholder="Search Task" v-model="selectedFilter.query"/>
-                    </InputGroup>
+            <div class="flex flex-col m-1 p-3 gap-2 rounded-md bg-surface-50 border border-surface-200">
+                <!-- SEARCH BAR -->
+                <InputGroup>
+                    <InputGroupAddon>
+                        <i class="pi pi-search"></i>
+                    </InputGroupAddon>
+                    <InputText placeholder="Search Task" v-model="selectedFilter.query"/>
+                </InputGroup>
 
-                    <div class="flex flex-row justify-between gap-2">
-                        <!-- GROUP FILTER -->
-                        <Dropdown v-model="selectedFilter.group" class="flex-1" :options="filterGroups" placeholder="Group Filter" optionValue="id">
-                            <template #value="slotProps">
-                                <div v-if="slotProps.value" class="">
-                                    <Tag :style="`background-color: ${getGroupData(slotProps.value)?.color}`">
-                                        <span>{{ getGroupData(slotProps.value)?.name }}</span>
-                                    </Tag>
-                                </div>
-                                <span v-else>
-                                    {{ slotProps.placeholder }}
-                                </span>
-                            </template>
-                            <template #option="slotProps">
-                                <Tag :style="`background-color: ${slotProps.option.color}`">
-                                    <span>{{ slotProps.option.name }}</span>
+                <div class="flex flex-row justify-between gap-2">
+                    <!-- GROUP FILTER -->
+                    <Dropdown v-model="selectedFilter.group" class="flex-1" :options="filterGroups" placeholder="Group Filter" optionValue="id">
+                        <template #value="slotProps">
+                            <div v-if="slotProps.value" class="">
+                                <Tag :style="`background-color: ${getGroupData(slotProps.value)?.color}`">
+                                    <span>{{ getGroupData(slotProps.value)?.name }}</span>
                                 </Tag>
-                            </template>
-                        </Dropdown>
+                            </div>
+                            <span v-else>
+                                {{ slotProps.placeholder }}
+                            </span>
+                        </template>
+                        <template #option="slotProps">
+                            <Tag :style="`background-color: ${slotProps.option.color}`">
+                                <span>{{ slotProps.option.name }}</span>
+                            </Tag>
+                        </template>
+                    </Dropdown>
 
 
-                        <!-- SORT FILTER -->
-                        <CascadeSelect v-model="selectedFilter.sort" class="flex-1" :options="filterOptions" optionLabel="label" optionGroupLabel="name"
-                            :optionGroupChildren="['options']" placeholder="Sort by" optionValue="value">
-                            <template #option="slotProps">
-                                <div class="w-full">
-                                    <span>{{ slotProps.option.name }}</span>
-                                    <div class="flex items-center">
-                                        <span class="flex-2">
-                                            {{ slotProps.option.label }}
-                                            <i v-if="slotProps.option.label === 'Ascending'" class="pi pi-chevron-up"> </i>
-                                            <i v-else-if="slotProps.option.label === 'Descending'"
-                                                class="pi pi-chevron-down">
-                                            </i>
-                                        </span>
-                                    </div>
+                    <!-- SORT FILTER -->
+                    <CascadeSelect v-model="selectedFilter.sort" class="flex-1" :options="filterOptions" optionLabel="label" optionGroupLabel="name"
+                        :optionGroupChildren="['options']" placeholder="Sort by" optionValue="value">
+                        <template #option="slotProps" class="w-full">
+                            <div class="w-full">
+                                <span>
+                                    {{ slotProps.option.name }}
+                                </span>
+                                <div class="flex items-center">
+                                    <span class="flex-2">
+                                        {{ slotProps.option.label }}
+                                    </span>
                                 </div>
-                            </template>
-                        </CascadeSelect>
-                    </div>
-
+                            </div>
+                        </template>
+                    </CascadeSelect>
                 </div>
-            </MqResponsive>
-
-            <MqResponsive target="md+">
-                <Toolbar class="">
-                    <!-- Group Filter -->
-                    <template #start>
-                        <Dropdown v-model="selectedFilter.group" :options="filterGroups" placeholder="Group Filter" optionValue="id">
-                            <template #value="slotProps">
-                                <div v-if="slotProps.value" class="">
-                                    <Tag :style="`background-color: ${getGroupData(slotProps.value)?.color}`">
-                                        <span>{{ getGroupData(slotProps.value)?.name }}</span>
-                                    </Tag>
-                                </div>
-                                <span v-else>
-                                    {{ slotProps.placeholder }}
-                                </span>
-                            </template>
-                            <template #option="slotProps">
-                                <Tag :style="`background-color: ${slotProps.option.color}`">
-                                    <span>{{ slotProps.option.name }}</span>
-                                </Tag>
-                            </template>
-                        </Dropdown>
-                    </template>
-
-                    <!-- Search filter -->
-                    <template #center>
-                        <InputGroup>
-                            <InputGroupAddon>
-                                <i class="pi pi-search"></i>
-                            </InputGroupAddon>
-                            <InputText placeholder="Search Task" v-model="selectedFilter.query"/>
-                        </InputGroup>
-                    </template>
-
-                    <!-- Sort by filter -->
-                    <template #end>
-                        <CascadeSelect v-model="selectedFilter.sort" :options="filterOptions" optionLabel="label" optionGroupLabel="name"
-                            :optionGroupChildren="['options']" placeholder="Sort by" optionValue="value">
-                            <template #option="slotProps">
-                                <div class="w-full">
-                                    <span>{{ slotProps.option.name }}</span>
-                                    <div class="flex items-center">
-                                        <span class="flex-2">
-                                            {{ slotProps.option.label }}
-                                            <i v-if="slotProps.option.label === 'Ascending'" class="pi pi-chevron-up"> </i>
-                                            <i v-else-if="slotProps.option.label === 'Descending'"
-                                                class="pi pi-chevron-down">
-                                            </i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </template>
-                        </CascadeSelect>
-                    </template>
-                </Toolbar>
-            </MqResponsive>
-
+            </div>
             <InlineMessage class="mx-3" severity="info">Click task title to show details</InlineMessage>
 
             <!-- TASK  -->
