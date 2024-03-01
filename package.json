@@ -2,7 +2,7 @@
   "name": "gdscui-todo-app",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://duckofthebooboo.github.io/GDSC-WebDev-ArajdianAltaf/",
+  "homepage": "https://duckofthebooboo.github.io/GDSCUI-WebDev-ArajdianAltaf/",
   "type": "module",
   "scripts": {
     "dev": "vite",
