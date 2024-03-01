@@ -136,12 +136,16 @@ onMounted(() => {
             </InputGroupAddon>
             <InputText v-model="title" placeholder="Task title" :invalid="Boolean(errors.title)" />
           </InputGroup>
-          <small class="text-red-500 mt-1">{{ errors.title }}</small>
+          <Transition name="fade">
+            <small v-if="Boolean(errors.title)" class="text-red-500 mt-1">{{ errors.title }}</small>
+          </Transition>
 
           <!-- TODO: Implement minimum date -->
           <Calendar class="shadow-lg" v-model="dueDate" :manualInput="false" showButtonBar showIcon iconDisplay="input"
             placeholder="Due date" :invalid="Boolean(errors.dueDate)" />
-          <small class="text-red-500 mt-1">{{ errors.dueDate }}</small>
+          <Transition name="fade">
+            <small v-if="Boolean(errors.dueDate)" class="text-red-500 mt-1">{{ errors.dueDate }}</small>
+          </Transition>
 
           <Textarea class="shadow-lg" v-model="description" placeholder="Description" autoResize />
 
@@ -155,7 +159,9 @@ onMounted(() => {
                 </span>
               </template>
             </SelectButton>
-            <small class="text-red-500 mt-1">{{ errors.priority }}</small>
+            <Transition name="fade">
+              <small v-if="Boolean(errors.priority)" class="text-red-500 mt-1">{{ errors.priority }}</small>
+            </Transition>
           </div>
 
           <p class="drop-shadow-lg">Group</p>
@@ -181,7 +187,9 @@ onMounted(() => {
               <!-- ADD GROUP DIALOG -->
               <Button class="flex-1 border-gray-300 shadow-lg" icon="pi pi-plus" outlined @click="addGroupFormVisible = true"></Button>
             </div>
-            <small class="text-red-500 mt-1">{{ errors.group }}</small>
+            <Transition name="fade">
+              <small v-if="Boolean(errors.group)" class="text-red-500 mt-1">{{ errors.group }}</small>
+            </Transition>
           </div>
         </div>
       </template>
@@ -195,3 +203,24 @@ onMounted(() => {
     </Card>
   </form>
 </template>
+
+<style scoped>
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.25s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* 2. declare enter from and leave to state */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+/* 3. ensure leaving items are taken out of layout flow so that moving
+      animations can be calculated correctly. */
+.fade-leave-active {
+  position: absolute;
+}
+</style>
