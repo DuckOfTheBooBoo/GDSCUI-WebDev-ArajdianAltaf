@@ -150,7 +150,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <!-- TODO: ConfirmDialog looks terrible in mobile view -->
     <ConfirmDialog group="headless">
         <template #container="{ message, acceptCallback, rejectCallback }">
             <div class="flex flex-col items-center p-5 bg-surface-0 dark:bg-surface-700 rounded-md">

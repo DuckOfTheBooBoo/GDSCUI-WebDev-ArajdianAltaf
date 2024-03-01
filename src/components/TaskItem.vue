@@ -76,7 +76,6 @@ todoStore.eventEmitter.on(TASKS_UPDATED, () => {
                 <!-- Chips -->
                 <div class="flex gap-1">
                     <!-- Group -->
-                    <!-- TODO: Force re render this -->
                     <Tag :style="`background-color: ${taskGroup?.color};`" :class="task.completed ? '!bg-gray-600' : ''" rounded>
                         <span class="text-[10px] sm:text-xs">{{ taskGroup?.name }}</span>
                     </Tag>
