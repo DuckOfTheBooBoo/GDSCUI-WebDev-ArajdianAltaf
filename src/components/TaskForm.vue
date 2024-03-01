@@ -7,7 +7,7 @@ import Card from 'primevue/card';
 import Dropdown from 'primevue/dropdown';
 import Tag from 'primevue/tag';
 import SelectButton from 'primevue/selectbutton';
-import { ref, reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import * as yup from 'yup'
 import { useForm } from 'vee-validate'
 import Task from '../models/Task';
@@ -15,6 +15,8 @@ import TaskFormData from '../models/TaskFormData';
 import Group from '../models/Group';
 import Priority from '../models/Priority';
 import { useTodoStore } from '../stores/todoStores';
+import AddGroupForm from './AddGroupForm.vue';
+import { GROUPS_UPDATED } from '../constants';
 
 const props = defineProps<{
   taskId?: number,
@@ -25,6 +27,10 @@ const props = defineProps<{
 const todoStore = useTodoStore()
 
 const task: Task | undefined = todoStore.getTask(props.taskId!)
+const groups: Group[] = reactive<Group[]>([])
+
+
+const addGroupFormVisible = ref(false)
 
 let formValues = undefined
 if (task) {
@@ -43,7 +49,7 @@ const formSchema = yup.object({
   dueDate: yup.date().required('Due date is required'),
   description: yup.string().nullable(),
   priority: yup.string().required('Priority is required').oneOf(['1', '2', '3'], 'Invalid priority id'),
-  group: yup.string().required('Group is required').oneOf(['1', '2', '3'], 'Invalid group id')
+  group: yup.string().required('Group is required')
 })
 
 const { defineField, handleSubmit, resetForm, errors } = useForm({
@@ -59,8 +65,6 @@ const [priority] = defineField('priority')
 const [group] = defineField('group')
 
 const priorities: Priority[] = todoStore.getPriorities()
-
-const groups = todoStore.getAllGroups()
 
 const groupTag = (groupId: number): Group | undefined => {
   return groups.find((group) => group.id === groupId)
@@ -101,16 +105,32 @@ const onSubmit = handleSubmit((values) => {
 
   props.closeCallback()
 })
+
+const fetchGroups = () => {
+  const newGroups = todoStore.getAllGroups()
+  groups.splice(0, groups.length, ...newGroups)
+}
+
+onMounted(() => {
+  fetchGroups()
+  todoStore.eventEmitter.on(GROUPS_UPDATED, fetchGroups)
+})
+
+
 </script>
 
 <template>
-  <!-- TODO: Find out why invalid in field aren't working -->
+  <Dialog :style="{ width: '90vw' }" v-model:visible="addGroupFormVisible" modal>
+    <template #container="{ closeCallback }">
+      <AddGroupForm :close-callback="closeCallback" />
+    </template>
+  </Dialog>
   <form @submit.prevent="onSubmit">
     <Card>
       <template #title>{{ formTitle }}</template>
       <template #content>
         <div class="flex flex-col gap-2">
-          <InputGroup>
+          <InputGroup class="shadow-lg">
             <InputGroupAddon>
               <i class="pi pi-pencil"></i>
             </InputGroupAddon>
@@ -119,16 +139,16 @@ const onSubmit = handleSubmit((values) => {
           <small class="text-red-500">{{ errors.title }}</small>
 
           <!-- TODO: Implement minimum date -->
-          <Calendar v-model="dueDate" :manualInput="false" showButtonBar showIcon iconDisplay="input"
+          <Calendar class="shadow-lg" v-model="dueDate" :manualInput="false" showButtonBar showIcon iconDisplay="input"
             placeholder="Due date" :invalid="Boolean(errors.dueDate)" />
           <small class="text-red-500">{{ errors.dueDate }}</small>
 
-          <Textarea v-model="description" placeholder="Description" autoResize />
+          <Textarea class="shadow-lg" v-model="description" placeholder="Description" autoResize />
 
-          <p>Priority</p>
+          <p class="drop-shadow-lg">Priority</p>
           <div class="flex justify-center flex-col items-center">
-            <SelectButton v-model="priority" :options="priorities" optionLabel="label" optionValue="value"
-              :invalid="Boolean(errors.priority)">
+            <SelectButton class="shadow-lg" v-model="priority" :options="priorities" optionLabel="label"
+              optionValue="value" :invalid="Boolean(errors.priority)">
               <template #option="slotProps">
                 <span class="font-bold">
                   {{ slotProps.option.name }}
@@ -138,24 +158,29 @@ const onSubmit = handleSubmit((values) => {
             <small class="text-red-500">{{ errors.priority }}</small>
           </div>
 
-          <p>Group</p>
+          <p class="drop-shadow-lg">Group</p>
           <div class="flex justify-center flex-col items-center">
-            <Dropdown v-model="group" placeholder="Select group" :options="groups" optionValue="id"
-              :invalid="Boolean(errors.group)">
-              <template #value="slotProps">
-                <div v-if="slotProps.value" class="">
-                  <Tag :style="`background-color: ${groupTag(slotProps.value)?.color};`">
-                    <span>{{ groupTag(slotProps.value)?.name }}</span>
+            <div class="flex flex-row gap-2">
+              <Dropdown class="flex-2 shadow-lg" v-model="group" placeholder="Select group" :options="groups"
+                optionValue="id" :invalid="Boolean(errors.group)">
+                <template #value="slotProps">
+                  <div v-if="slotProps.value" class="">
+                    <Tag :style="`background-color: ${groupTag(slotProps.value)?.color};`">
+                      <span>{{ groupTag(slotProps.value)?.name }}</span>
+                    </Tag>
+                  </div>
+                  <span v-else>{{ slotProps.placeholder }}</span>
+                </template>
+                <template #option="slotProps">
+                  <Tag :style="`background-color: ${slotProps.option.color};`">
+                    <span>{{ slotProps.option.name }}</span>
                   </Tag>
-                </div>
-                <span v-else>{{ slotProps.placeholder }}</span>
-              </template>
-              <template #option="slotProps">
-                <Tag :style="`background-color: ${slotProps.option.color};`">
-                  <span>{{ slotProps.option.name }}</span>
-                </Tag>
-              </template>
-            </Dropdown>
+                </template>
+              </Dropdown>
+
+              <!-- ADD GROUP DIALOG -->
+              <Button class="flex-1 border-gray-300 shadow-lg" icon="pi pi-plus" outlined @click="addGroupFormVisible = true"></Button>
+            </div>
             <small class="text-red-500">{{ errors.group }}</small>
           </div>
         </div>

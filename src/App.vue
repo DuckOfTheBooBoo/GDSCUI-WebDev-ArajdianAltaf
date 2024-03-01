@@ -12,17 +12,22 @@ import TaskForm from './components/TaskForm.vue';
 import {useTodoStore} from './stores/todoStores'
 import Filter from './models/Filter';
 import Group from './models/Group';
-import { ref, Ref } from 'vue';
+import { ref, Ref, reactive, onMounted, computed } from 'vue';
+import {GROUPS_UPDATED, TASKS_UPDATED} from './constants'
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
 
 const todoStore = useTodoStore()
 
-const groups = todoStore.getAllGroups()
-const filterGroups = ref([
-    {id: 0, name: 'None', color: '#000000'},
-    ...groups
-])
+const groups: Group[] = reactive<Group[]>([])
+
+const filterGroups = computed(() => {
+    return [
+        {id: 0, name: 'None', color: '#000000'},
+        ...groups
+    ] as Group[]
+})
+
 const filterOptions = ref([
     {
         name: 'Priority',
@@ -60,6 +65,15 @@ const selectedFilter: Ref<Filter> = ref({
 
 const addNewTaskDialogVisible = ref(false)
 
+const fetchGroups = () => {
+    const newGroups = todoStore.getAllGroups()
+    groups.splice(0, groups.length, ...newGroups)
+}
+
+onMounted(() => {
+    fetchGroups()
+    todoStore.eventEmitter.on(GROUPS_UPDATED, fetchGroups)
+})
 </script>
 
 <template>

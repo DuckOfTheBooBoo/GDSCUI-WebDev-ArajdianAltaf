@@ -7,6 +7,7 @@ import Filter from '../models/Filter';
 import { useConfirm } from 'primevue/useconfirm';
 import ConfirmDialog from 'primevue/confirmdialog';
 import 'animate.css'
+import { TASKS_UPDATED } from '../constants';
 
 const props: Filter = defineProps<Filter>()
 
@@ -142,7 +143,7 @@ const filteredTasks = computed(() => filterAndSortTasks(tasks, props))
 
 onMounted(() => {
     fetchTasks()
-    todoStore.eventEmitter.on('tasksUpdated', fetchTasks)
+    todoStore.eventEmitter.on(TASKS_UPDATED, fetchTasks)
 })
 </script>
 

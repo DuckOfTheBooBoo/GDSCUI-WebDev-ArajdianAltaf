@@ -4,6 +4,8 @@ import Task from '../models/Task'
 import TaskFormData from '../models/TaskFormData'
 import Group from '../models/Group'
 import Priority from '../models/Priority'
+import GroupFormData from '../models/GroupFormData'
+import {GROUPS_UPDATED, TASKS_UPDATED} from '../constants'
 
 export const useTodoStore = defineStore('todo', {
     state: () => ({
@@ -72,39 +74,52 @@ export const useTodoStore = defineStore('todo', {
         getGroup: (state) => (groupId: number) => state.groups.find(group => group.id === groupId)
     },
     actions: {
-        getNewId() {
-            const ids = this.tasks.map(task => task.id)
-            const max = Math.max(...ids)
-            return max > 0 ? max + 1 : 1
+        getNewId(target: 'task' | 'group'): number | undefined {
+            if (target === 'task') {
+                const ids = this.tasks.map(task => task.id)
+                const max = Math.max(...ids)
+                return max > 0 ? max + 1 : 1
+            } else if (target === 'group') {
+                const ids = this.groups.map(group => group.id)
+                const max = Math.max(...ids)
+                return max > 0 ? max + 1 : 1
+            }
+
+            return undefined
         },
         addTask(newTask: TaskFormData): number {
             const task: Task = {
-                id: this.getNewId(),
+                id: this.getNewId('task')!,
                 completed: false,
                 ...newTask
             }
             this.tasks.push(task)
-            this.eventEmitter.emit('tasksUpdated')
+            this.eventEmitter.emit(TASKS_UPDATED)
             return task.id
         },
         updateTask(updatedTask: Task): void {
             const taskIndex = this.tasks.findIndex((task) => task.id === updatedTask.id);
             this.tasks[taskIndex] = updatedTask;
-            this.eventEmitter.emit('tasksUpdated')
+            this.eventEmitter.emit(TASKS_UPDATED)
         },
         toggleTaskStatus(taskId: number): void {
             const taskIndex = this.tasks.findIndex((task) => task.id === taskId);
             this.tasks[taskIndex].completed = !this.tasks[taskIndex].completed
-            this.eventEmitter.emit('tasksUpdated')
+            this.eventEmitter.emit(TASKS_UPDATED)
         },
         removeTask(taskId: number): void {
             this.tasks = this.tasks.filter(task => task.id !== taskId)
-            this.eventEmitter.emit('tasksUpdated')
+            this.eventEmitter.emit(TASKS_UPDATED)
         },
-        addGroup(newGroup: Group): void {
-            const existGroup = this.groups.find(group => group.name.toLowerCase() === newGroup.name.toLowerCase())
+        addGroup(newGroupData: GroupFormData): void {
+            const existGroup = this.groups.find(group => group.name.toLowerCase() === newGroupData.name.toLowerCase())
             if (!existGroup) {
+                const newGroup: Group = {
+                    id: this.getNewId('group')!,
+                    ...newGroupData
+                }
                 this.groups.push(newGroup)
+                this.eventEmitter.emit(GROUPS_UPDATED)
             }
         },
         removeGroup(groupId: number): void {
