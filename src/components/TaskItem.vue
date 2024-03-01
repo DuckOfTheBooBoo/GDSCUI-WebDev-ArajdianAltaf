@@ -67,13 +67,13 @@ todoStore.eventEmitter.on(TASKS_UPDATED, () => {
     <div class="">
         <!-- TODO: Make it responsive -->
         <!-- Detail -->
-        <Dialog class="!sm:w-[90vw]" :style="{ width: '50vw' }"
+        <Dialog class="" :style="{ width: '70%', maxWidth: '70%' }"
             v-model:visible="taskDetailDialogVisible" modal>
             <TaskDetail :task-id="taskId"></TaskDetail>
         </Dialog>
 
         <!-- Edit -->
-        <Dialog :style="{ width: '50vw' }" v-model:visible="taskEditDialogVisible" modal>
+        <Dialog :style="{ width: '70%', maxWidth: '70%' }" v-model:visible="taskEditDialogVisible" modal>
             <template #container="{ closeCallback }">
                 <TaskForm :close-callback="closeCallback" :addNew="false" :task-id="taskId" />
             </template>

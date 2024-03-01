@@ -75,7 +75,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Dialog v-model:visible="addNewTaskDialogVisible" :style="{ width: '50vw' }" modal>
+    <Dialog v-model:visible="addNewTaskDialogVisible" :style="{ width: '70%', maxWidth: '70%' }" modal>
         <template #container="{ closeCallback }">
             <TaskForm :close-callback="closeCallback" :addNew="true" />
         </template>
