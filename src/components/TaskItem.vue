@@ -19,6 +19,7 @@ import Group from '../models/Group'
 import Task from '../models/Task'
 import { useTodoStore } from '../stores/todoStores'
 import { reactive } from 'vue'
+import {TASKS_UPDATED} from '../constants'
 
 // @ts-ignore
 import { MqResponsive } from 'vue3-mq'
@@ -30,14 +31,6 @@ const props = defineProps<{
 
 const todoStore = useTodoStore()
 
-const otherOptions = [
-    {
-        label: 'Delete',
-        icon: 'pi pi-trash',
-        command: null
-    }
-]
-
 const task: Task = reactive({} as Task)
 if (task) {
     Object.assign(task, todoStore.getTask(props.taskId)!)
@@ -45,15 +38,26 @@ if (task) {
     console.log('Task is undefined', task)
 }
 
-const taskGroup: Ref<Group> = ref({} as Group)
-taskGroup.value = todoStore.getGroup(task.group)!
+const taskGroup: Group = reactive<Group>({} as Group)
+Object.assign(taskGroup, todoStore.getGroup(task.group)!)
 
-if (!taskGroup.value) {
-    console.log('taskGroup is undefined', taskGroup.value)
-}
+// if (!taskGroup.value) {
+//     console.log('taskGroup is undefined', taskGroup.value)
+// }
 
 const taskDetailDialogVisible = ref(false)
 const taskEditDialogVisible = ref(false)
+
+todoStore.eventEmitter.on(TASKS_UPDATED, () => {
+    const updatedTask = todoStore.getTask(props.taskId)!
+    
+    if (task.group !== updatedTask.group) {
+        const newGroup = todoStore.getGroup(updatedTask.group)!
+        Object.assign(taskGroup, newGroup)
+    }
+
+    Object.assign(task, updatedTask)
+})
 
 </script>
 
