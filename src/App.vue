@@ -33,6 +33,14 @@ const filterOptions = ref([
         ]
     },
     {
+        name: 'Title',
+        options: [
+            { label: 'None',  value: null},
+            { label: 'Title > Ascending', value: 'title-asc'},
+            { label: 'Title > Descending', value: 'title-desc'}
+        ]
+    },
+    {
         name: 'Due date',
         options: [
             { label: 'None',  value: null},

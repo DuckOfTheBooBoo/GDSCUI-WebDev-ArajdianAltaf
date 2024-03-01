@@ -80,6 +80,30 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
                 })
                 break
             }
+            case 'title-asc': {
+                todoTasks.sort((aTask, bTask) => {
+                    if (aTask.title > bTask.title) {
+                        return -1
+                    }
+                    if (bTask.title > aTask.title) {
+                        return 1
+                    }
+                    return  0
+                })
+                break
+            }
+            case 'title-desc': {
+                todoTasks.sort((aTask, bTask) => {
+                    if (aTask.title > bTask.title) {
+                        return -1
+                    }
+                    if (bTask.title > aTask.title) {
+                        return 1
+                    }
+                    return  0
+                }).reverse()
+                break
+            }
         }
     } else {
         console.log('Sort is null', todoTasks)
