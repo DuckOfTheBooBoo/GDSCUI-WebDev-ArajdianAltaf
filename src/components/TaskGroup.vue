@@ -5,7 +5,6 @@ import Task from '../models/Task'
 import { useTodoStore } from '../stores/todoStores';
 import Filter from '../models/Filter';
 import { useConfirm } from 'primevue/useconfirm';
-import ConfirmDialog from 'primevue/confirmdialog';
 // import 'animate.css'
 import { TASKS_UPDATED } from '../constants';
 
@@ -18,11 +17,13 @@ const deleteDialog = (taskId: number): void => {
         group: 'headless',
         message: 'Are you sure you want to delete this task?',
         header: 'Confirmation',
-        accept: () => todoStore.removeTask(taskId),
+        accept: () => {
+            todoStore.removeTask(taskId)
+        
+        },
         reject: () => { }
     })
 }
-
 
 let tasks: Task[] = reactive([] as Task[])
 
@@ -165,7 +166,7 @@ onMounted(() => {
             </div>
         </template>
     </ConfirmDialog>
-
+    
     <TransitionGroup v-if="tasks.length > 0" name="fade" tag="TaskItem" class="mx-3 flex flex-col gap-2">
         <TaskItem v-for="task in filteredTasks" :task-id="task.id" :key="task.id" :delete-dialog-func="deleteDialog" class="item" />
     </TransitionGroup>

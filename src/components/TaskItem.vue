@@ -3,16 +3,6 @@ import { ref, Ref } from 'vue'
 import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
-import SplitButton from 'primevue/splitbutton'
-import { useConfirm } from 'primevue/useconfirm'
-import ConfirmDialog from 'primevue/confirmdialog'
-import Dialog from 'primevue/dialog'
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import Textarea from 'primevue/textarea'
-import Dropdown from 'primevue/dropdown'
 import TaskForm from './TaskForm.vue'
 import TaskDetail from './TaskDetail.vue'
 import Group from '../models/Group'
@@ -32,11 +22,8 @@ const props = defineProps<{
 const todoStore = useTodoStore()
 
 const task: Task = reactive({} as Task)
-if (task) {
-    Object.assign(task, todoStore.getTask(props.taskId)!)
-} else {
-    console.log('Task is undefined', task)
-}
+// if (task) {
+Object.assign(task, todoStore.getTask(props.taskId)!)
 
 const taskGroup: Group = reactive<Group>({} as Group)
 Object.assign(taskGroup, todoStore.getGroup(task.group)!)
@@ -49,14 +36,16 @@ const taskDetailDialogVisible = ref(false)
 const taskEditDialogVisible = ref(false)
 
 todoStore.eventEmitter.on(TASKS_UPDATED, () => {
-    const updatedTask = todoStore.getTask(props.taskId)!
+    const updatedTask = todoStore.getTask(props.taskId)
     
-    if (task.group !== updatedTask.group) {
-        const newGroup = todoStore.getGroup(updatedTask.group)!
-        Object.assign(taskGroup, newGroup)
+    if (updatedTask !== undefined) {
+        if (task.group !== updatedTask.group) {
+            const newGroup = todoStore.getGroup(updatedTask.group)!
+            Object.assign(taskGroup, newGroup)
+        }
+    
+        Object.assign(task, updatedTask)
     }
-
-    Object.assign(task, updatedTask)
 })
 
 </script>
