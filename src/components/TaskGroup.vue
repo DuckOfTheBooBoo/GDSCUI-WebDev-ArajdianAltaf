@@ -6,7 +6,7 @@ import { useTodoStore } from '../stores/todoStores';
 import Filter from '../models/Filter';
 import { useConfirm } from 'primevue/useconfirm';
 import ConfirmDialog from 'primevue/confirmdialog';
-import 'animate.css'
+// import 'animate.css'
 import { TASKS_UPDATED } from '../constants';
 
 const props: Filter = defineProps<Filter>()
@@ -129,7 +129,11 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
         }
 
         // Check if query is inside task.title
-        if (!task.title.includes(selectedFilter.query!)) {
+        // if (!task.title.includes(selectedFilter.query!)) {
+        //     return false
+        // }
+        
+        if (!new RegExp(selectedFilter.query!, 'i').test(task.title)){
             return false
         }
 
