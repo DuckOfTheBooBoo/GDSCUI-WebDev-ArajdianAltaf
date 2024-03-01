@@ -32,6 +32,9 @@ const groups: Group[] = reactive<Group[]>([])
 
 const addGroupFormVisible = ref(false)
 const currentDate = ref(new Date())
+const date = currentDate.value.getDate()
+const month = currentDate.value.getMonth()
+const year = currentDate.value.getFullYear()
 
 let formValues = undefined
 if (task) {
@@ -46,7 +49,7 @@ if (task) {
 
 const formSchema = yup.object({
   title: yup.string().min(5, 'Title must be at least 5 characters').required('Title is required'),
-  dueDate: yup.date().required('Due date is required').min(currentDate.value, 'Due date must be in the future. Unless you\'re a time traveler...'),
+  dueDate: yup.date().required('Due date is required').min(new Date(year, month, date), 'Due date must be in the future. Unless you\'re a time traveler...'),
   description: yup.string().nullable(),
   priority: yup.string().required('Priority is required').oneOf(['1', '2', '3'], 'Invalid priority id'),
   group: yup.string().required('Group is required')
@@ -141,7 +144,7 @@ onMounted(() => {
           </Transition>
 
           <Calendar class="shadow-lg" v-model="dueDate" :manualInput="false" showButtonBar showIcon iconDisplay="input"
-            placeholder="Due date" :invalid="Boolean(errors.dueDate)" />
+            placeholder="Due date" :invalid="Boolean(errors.dueDate)" dateFormat="dd/mm/yy" />
           <Transition name="fade">
             <small v-if="Boolean(errors.dueDate)" class="text-red-500 mt-1">{{ errors.dueDate }}</small>
           </Transition>
