@@ -123,7 +123,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Dialog :style="{ width: '90vw' }" v-model:visible="addGroupFormVisible" modal>
+  <Dialog :style="{ width: '50vw' }" v-model:visible="addGroupFormVisible" modal>
     <template #container="{ closeCallback }">
       <AddGroupForm :close-callback="closeCallback" />
     </template>
