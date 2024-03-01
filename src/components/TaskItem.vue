@@ -114,7 +114,7 @@ todoStore.eventEmitter.on(TASKS_UPDATED, () => {
                         'duration-200'
                     ]
                 })
-            }" class="mr-1" v-model="task.completed" @click="todoStore.toggleTaskStatus(taskId)" :binary="true" />
+            }" class="mr-1" v-model="task.completed" @update:model-value="todoStore.toggleTaskStatus(taskId)" :binary="true" />
 
             <div class="flex flex-col flex-1 gap-1">
                 <p class="font-bold text-base sm:text-xl" @click="taskDetailDialogVisible = true">{{ task?.title }}</p>
