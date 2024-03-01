@@ -136,12 +136,12 @@ onMounted(() => {
             </InputGroupAddon>
             <InputText v-model="title" placeholder="Task title" :invalid="Boolean(errors.title)" />
           </InputGroup>
-          <small class="text-red-500">{{ errors.title }}</small>
+          <small class="text-red-500 mt-1">{{ errors.title }}</small>
 
           <!-- TODO: Implement minimum date -->
           <Calendar class="shadow-lg" v-model="dueDate" :manualInput="false" showButtonBar showIcon iconDisplay="input"
             placeholder="Due date" :invalid="Boolean(errors.dueDate)" />
-          <small class="text-red-500">{{ errors.dueDate }}</small>
+          <small class="text-red-500 mt-1">{{ errors.dueDate }}</small>
 
           <Textarea class="shadow-lg" v-model="description" placeholder="Description" autoResize />
 
@@ -155,7 +155,7 @@ onMounted(() => {
                 </span>
               </template>
             </SelectButton>
-            <small class="text-red-500">{{ errors.priority }}</small>
+            <small class="text-red-500 mt-1">{{ errors.priority }}</small>
           </div>
 
           <p class="drop-shadow-lg">Group</p>
@@ -181,7 +181,7 @@ onMounted(() => {
               <!-- ADD GROUP DIALOG -->
               <Button class="flex-1 border-gray-300 shadow-lg" icon="pi pi-plus" outlined @click="addGroupFormVisible = true"></Button>
             </div>
-            <small class="text-red-500">{{ errors.group }}</small>
+            <small class="text-red-500 mt-1">{{ errors.group }}</small>
           </div>
         </div>
       </template>
