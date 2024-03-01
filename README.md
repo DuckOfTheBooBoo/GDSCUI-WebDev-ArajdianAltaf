@@ -97,4 +97,8 @@ Error message will be shown if user inputs are invalid, the rules are:
 
 ![Data Persistance](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmtqNTlqMnd4bThxN2txamlxOXo3bTl1bXFjMGEwaDh2N2UzcmVwaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gYZOK0qA71xZAO3UGm/giphy.gif)
 
-User's tasks are stored inside localStorage API.
+User's tasks are stored inside localStorage API as serialized JSON, you can see it inside your own respective browser's devtools
+- Chrome: Developer tools (CTRL + SHIFT + I) > Application > Storage > Local Storage
+- Firefox: Developer tools > Storage > Local Storage
+```tasks``` localStorage item contains an array of tasks
+```groups``` localStorage item contains an array of groups
