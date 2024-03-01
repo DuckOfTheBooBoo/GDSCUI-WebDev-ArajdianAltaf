@@ -7,6 +7,7 @@ import Card from 'primevue/card';
 import Dropdown from 'primevue/dropdown';
 import Tag from 'primevue/tag';
 import SelectButton from 'primevue/selectbutton';
+import { useToast } from 'primevue/usetoast';
 import { onMounted, reactive, ref } from 'vue';
 import * as yup from 'yup'
 import { useForm } from 'vee-validate'
@@ -23,6 +24,8 @@ const props = defineProps<{
   closeCallback: VoidFunction,
   addNew: boolean // true for add new task, false for edit task
 }>()
+
+const toast = useToast()
 
 const todoStore = useTodoStore()
 
@@ -90,6 +93,7 @@ const onSubmit = handleSubmit((values) => {
 
     const newTaskId = todoStore.addTask(task)
     console.log(`Successfully added new task id: ${newTaskId}`)
+    toast.add({severity: 'success', summary: `Successfully added new task id: ${newTaskId}`, life: 1000})
   } else {
     // Edit task
     const oldTask: Task = todoStore.getTask(props.taskId!)!
@@ -104,6 +108,7 @@ const onSubmit = handleSubmit((values) => {
 
     todoStore.updateTask(updatedTask)
     console.log(`Successfully updated task ${props.taskId}`)
+    toast.add({severity: 'success', summary: `Successfully updated task ${props.taskId}`, life: 1000})
   }
 
   props.closeCallback()

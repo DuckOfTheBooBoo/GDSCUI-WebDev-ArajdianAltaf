@@ -8,6 +8,7 @@ import Ripple from 'primevue/ripple'
 import 'primeicons/primeicons.css'
 import ConfirmationService from 'primevue/confirmationservice'
 import DialogService from 'primevue/dialogservice'
+import ToastService from 'primevue/toastservice'
 // @ts-ignore
 import { Vue3Mq } from "vue3-mq"
 import {createPinia} from 'pinia'
@@ -22,7 +23,7 @@ app.use(pinia)
 const todoStore = useTodoStore()
 todoStore.getFromLocalStorage()
 
-
+app.use(ToastService)
 app.use(ConfirmationService)
 app.use(DialogService)
 app.use(Vue3Mq)

@@ -3,6 +3,7 @@ import TaskItem from './TaskItem.vue'
 import { ref, onMounted, computed, reactive } from 'vue';
 import Task from '../models/Task'
 import { useTodoStore } from '../stores/todoStores';
+import {useToast} from 'primevue/usetoast'
 import Filter from '../models/Filter';
 import { useConfirm } from 'primevue/useconfirm';
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -13,6 +14,7 @@ import { TASKS_UPDATED } from '../constants';
 const props: Filter = defineProps<Filter>()
 
 const confirm = useConfirm()
+const toast = useToast()
 
 const deleteDialog = (taskId: number): void => {
     confirm.require({
@@ -21,7 +23,7 @@ const deleteDialog = (taskId: number): void => {
         header: 'Confirmation',
         accept: () => {
             todoStore.removeTask(taskId)
-        
+            toast.add({severity: 'success', summary: `Successfully deleted task ${taskId}`, life: 1000})
         },
         reject: () => { }
     })

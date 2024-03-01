@@ -10,6 +10,7 @@ import TaskForm from './components/TaskForm.vue';
 import { useTodoStore } from './stores/todoStores'
 import Filter from './models/Filter';
 import Group from './models/Group';
+import Toast from 'primevue/toast'
 import { ref, Ref, reactive, onMounted, computed } from 'vue';
 import { GROUPS_UPDATED, TASKS_UPDATED } from './constants'
 // @ts-ignore
@@ -75,6 +76,7 @@ onMounted(() => {
 </script>
 
 <template>
+    <Toast />
     <Dialog v-model:visible="addNewTaskDialogVisible" :style="{ width: '70%', maxWidth: '70%' }" modal>
         <template #container="{ closeCallback }">
             <TaskForm :close-callback="closeCallback" :addNew="true" />
