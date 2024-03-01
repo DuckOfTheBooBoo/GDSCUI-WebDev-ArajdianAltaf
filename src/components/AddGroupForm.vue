@@ -5,7 +5,7 @@ import FloatLabel from 'primevue/floatlabel'
 import ColorPicker from 'primevue/colorpicker';
 import * as yup from 'yup'
 import { useForm } from 'vee-validate'
-import { reactive } from 'vue';
+import { reactive, computed } from 'vue';
 import { useTodoStore } from '../stores/todoStores';
 import Group from '../models/Group';
 import GroupFormData from '../models/GroupFormData'
@@ -15,6 +15,10 @@ const props = defineProps<{
 }>()
 
 const todoStore = useTodoStore()
+const groups = computed(() => todoStore.getAllGroups())
+const groupsList = reactive([
+    ...groups.value.map(group => group.name)
+])
 
 const formValues = reactive<{groupName: string | null, hexColor: string | null}>({
     groupName: null,
@@ -22,7 +26,19 @@ const formValues = reactive<{groupName: string | null, hexColor: string | null}>
 })
 
 const formSchema = yup.object({
-    groupName: yup.string().min(3, 'Group name must be > 2 char').required('Group name is required'),
+    groupName: yup.string().min(3, 'Group name must be > 2 char').required('Group name is required').test(
+        'groupname-regex-check',
+        'Group name is taken',
+        (value) => {
+            const regex = new RegExp('\\b' + value + '\\b', 'i')
+            for (const groupName of groupsList) {
+                if (regex.test(groupName) === true) {
+                    return false
+                }
+            }
+            return true            
+        }
+    ),
     hexColor: yup.string().required('Group color is required')
 })
 
@@ -49,7 +65,7 @@ const onSubmit = handleSubmit((values) => {
 
 <template>
     <form @submit.prevent="onSubmit">
-        <Card>
+        <Card class="">
             <template #title>Add New Group</template>
             <template #content>
                 <div class="flex justify-center flex-col gap-2">
