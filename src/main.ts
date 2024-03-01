@@ -11,9 +11,18 @@ import DialogService from 'primevue/dialogservice'
 // @ts-ignore
 import { Vue3Mq } from "vue3-mq"
 import {createPinia} from 'pinia'
+import { useTodoStore } from './stores/todoStores'
 
 const app = createApp(App)
-app.use(createPinia())
+
+// Pinia init
+const pinia = createPinia()
+app.use(pinia)
+// Load data
+const todoStore = useTodoStore()
+todoStore.getFromLocalStorage()
+
+
 app.use(ConfirmationService)
 app.use(DialogService)
 app.use(Vue3Mq)

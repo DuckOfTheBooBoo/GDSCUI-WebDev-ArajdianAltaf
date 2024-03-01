@@ -9,51 +9,7 @@ import {GROUPS_UPDATED, TASKS_UPDATED} from '../constants'
 
 export const useTodoStore = defineStore('todo', {
     state: () => ({
-        tasks: [
-            {
-                id: 1,
-                title: "Finish project report",
-                description: "Finalize and submit the report",
-                group: 2,
-                priority: 3, // High priority
-                dueDate: new Date(2024, 2, 2), // March 2nd, 2024
-                completed: false
-            },
-            {
-                id: 2,
-                title: "Schedule team meeting",
-                group: 1, 
-                priority: 2, // Medium priority
-                dueDate: new Date(2024, 2, 6), 
-                completed: false
-            },
-            {
-                id: 3,
-                title: "Follow up on client email",
-                description: "Respond to pending questions",
-                group: 3,
-                priority: 1, // Low priority
-                dueDate: new Date(2024, 2, 3),
-                completed: false
-            },
-            {
-                id: 4,
-                title: "Order office supplies",
-                group: 2,
-                priority: 2, 
-                dueDate: new Date(2024, 2, 8), 
-                completed: false
-            },
-            {
-                id: 5,
-                title: "Review code changes",
-                description: "Check the pull request",
-                group: 1,
-                priority: 3, 
-                dueDate: new Date(2024, 2, 1), 
-                completed: false
-            }
-        ] as Task[],
+        tasks: [] as Task[],
         groups: [
             { name: "General", color: "", id: 1 },
             { name: "Work", color: "#3b82f6", id: 2 },
@@ -95,21 +51,25 @@ export const useTodoStore = defineStore('todo', {
             }
             this.tasks.push(task)
             this.eventEmitter.emit(TASKS_UPDATED)
+            this.saveToLocalStorage()
             return task.id
         },
         updateTask(updatedTask: Task): void {
             const taskIndex = this.tasks.findIndex((task) => task.id === updatedTask.id);
             this.tasks[taskIndex] = updatedTask;
             this.eventEmitter.emit(TASKS_UPDATED)
+            this.saveToLocalStorage()
         },
         toggleTaskStatus(taskId: number): void {
             const taskIndex = this.tasks.findIndex((task) => task.id === taskId);
             this.tasks[taskIndex].completed = !this.tasks[taskIndex].completed
             this.eventEmitter.emit(TASKS_UPDATED)
+            this.saveToLocalStorage()
         },
         removeTask(taskId: number): void {
             this.tasks = this.tasks.filter(task => task.id !== taskId)
             this.eventEmitter.emit(TASKS_UPDATED)
+            this.saveToLocalStorage()
         },
         addGroup(newGroupData: GroupFormData): void {
             const existGroup = this.groups.find(group => group.name.toLowerCase() === newGroupData.name.toLowerCase())
@@ -120,10 +80,39 @@ export const useTodoStore = defineStore('todo', {
                 }
                 this.groups.push(newGroup)
                 this.eventEmitter.emit(GROUPS_UPDATED)
+                this.saveToLocalStorage()
             }
         },
         removeGroup(groupId: number): void {
             this.groups = this.groups.filter(group => group.id !== groupId)
+            this.saveToLocalStorage()
+        },
+        getFromLocalStorage(): void {
+            const jsonTasks = localStorage.getItem('tasks')
+            if (jsonTasks) {
+                const parsedTasks = JSON.parse(jsonTasks) as Task[]
+                this.tasks = parsedTasks.map(task => {
+                    const dueDate = new Date(task.dueDate)
+
+                    return {
+                        ...task,
+                        dueDate: dueDate
+                    }
+                })
+            }
+
+            const jsonGroups = localStorage.getItem('groups')
+            if (jsonGroups) {
+                this.groups = JSON.parse(jsonGroups) as Group[]
+            }
+        },
+        saveToLocalStorage(): void {
+            // Serialize
+            const serializedTasks = JSON.stringify(this.tasks)
+            const serializedGroups = JSON.stringify(this.groups)
+
+            localStorage.setItem('tasks', serializedTasks)
+            localStorage.setItem('groups', serializedGroups)
         }
     }
 })
