@@ -81,7 +81,7 @@ onMounted(() => {
         </template>
     </Dialog>
     <!-- Add Button -->
-    <div class="absolute bottom-0 right-0 z-40">
+    <div class="fixed bottom-0 right-0 z-40">
         <Button @click="addNewTaskDialogVisible = true" class="m-5 shadow-3xl " size="large" rounded>
             <i class="pi pi-plus py-3 px-2"></i>
         </Button>
