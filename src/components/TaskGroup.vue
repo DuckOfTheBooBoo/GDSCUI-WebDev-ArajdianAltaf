@@ -37,8 +37,24 @@ const fetchTasks = () => {
 const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
     let todoTasks = [...tasks]
 
+    // Sort uncompleted first
+    todoTasks.sort((aTask, bTask) => {
+        // If a is completed and b is not, b comes first 
+        if (aTask.completed && !bTask.completed) {
+            return 1;
+        }
+        // If b is completed and a is not, a comes first
+        else if (!aTask.completed && bTask.completed) {
+            return -1;
+        }
+        // Do not change in order
+        else {
+            return 0;
+        }
+    })
+
     // Sort if parameter is not null
-    if (selectedFilter.sort !== null) {
+    if (Boolean(selectedFilter.sort)) {
         switch (selectedFilter.sort) {
             case 'priority-asc': {
                 todoTasks.sort((aTask, bTask) => bTask.priority - aTask.priority).reverse()
@@ -122,7 +138,7 @@ onMounted(() => {
     </ConfirmDialog>
 
     <TransitionGroup v-if="tasks.length > 0" name="fade" tag="TaskItem" class="mx-3 flex flex-col gap-2">
-        <TaskItem v-for="task in filteredTasks" :task-id="task.id" :key="task.id" :delete-dialog-func="deleteDialog" />
+        <TaskItem v-for="task in filteredTasks" :task-id="task.id" :key="task.id" :delete-dialog-func="deleteDialog" class="item" />
     </TransitionGroup>
     <div v-else class="flex justify-center items-center flex-col gap-3">
         <img class="w-64" src="../assets/doge.png" alt="Doge">
@@ -130,37 +146,29 @@ onMounted(() => {
     </div>
 </template>
 
-<!-- <style scoped>
+<style scoped>
 .container {
-    position: relative;
-    padding: 0;
-}
-
-.item {
-    width: 100%;
-    height: 30px;
-    background-color: #f3f3f3;
-    border: 1px solid #666;
-    box-sizing: border-box;
+  position: relative;
+  padding: 0;
 }
 
 /* 1. declare transition */
 .fade-move,
 .fade-enter-active,
 .fade-leave-active {
-    transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
 }
 
 /* 2. declare enter from and leave to state */
 .fade-enter-from,
 .fade-leave-to {
-    opacity: 0;
-    transform: scaleY(0.01) translate(30px, 0);
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
 }
 
 /* 3. ensure leaving items are taken out of layout flow so that moving
       animations can be calculated correctly. */
 .fade-leave-active {
-    position: absolute;
+  position: absolute;
 }
-</style> -->
+</style>

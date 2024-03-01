@@ -38,9 +38,9 @@ const otherOptions = [
     }
 ]
 
-let task: Task = reactive({} as Task)
+const task: Task = reactive({} as Task)
 if (task) {
-    task = todoStore.getTask(props.taskId)!
+    Object.assign(task, todoStore.getTask(props.taskId)!)
 } else {
     console.log('Task is undefined', task)
 }
@@ -75,8 +75,8 @@ const taskEditDialogVisible = ref(false)
 
         <div v-ripple class="w-full flex flex-row gap-2 shadow-md bg-white shadow-primary-200
     rounded-xl items-center px-2 py-3 hover:cursor-pointer hover:shadow-md hover:shadow-primary-300 transition-shadow
-    hover:z-50 animate-fade-left animate-once animate-duration-[650ms] animate-delay-100">
-            <Checkbox class="mr-1" v-model="task.completed" :binary="true" />
+    hover:z-50 animate-fade-left animate-once animate-duration-[650ms] animate-delay-100" :class="task.completed ? '!shadow-gray-300' : ''">
+            <Checkbox class="mr-1" v-model="task.completed" @click="todoStore.toggleTaskStatus(taskId)" :binary="true" />
 
             <div class="flex flex-col flex-1 gap-1">
                 <p class="font-bold text-base sm:text-xl" @click="taskDetailDialogVisible = true">{{ task?.title }}</p>
@@ -84,42 +84,37 @@ const taskEditDialogVisible = ref(false)
                 <div class="flex gap-1">
                     <!-- Group -->
                     <!-- TODO: Force re render this -->
-                    <Tag :style="`background-color: ${taskGroup?.color};`" rounded>
+                    <Tag :style="`background-color: ${taskGroup?.color};`" :class="task.completed ? '!bg-gray-600' : ''" rounded>
                         <span class="text-[10px] sm:text-xs">{{ taskGroup?.name }}</span>
                     </Tag>
 
                     <!-- Priority -->
-                    <Tag v-if="task?.priority === 1" severity="info" rounded>
+                    <Tag v-if="task?.priority === 1" severity="info" :class="task.completed ? '!bg-gray-600' : ''" rounded>
                         <span class="text-[10px] sm:text-xs">Low</span>
                     </Tag>
-                    <Tag v-else-if="task.priority === 2" value="Medium" severity="warning" rounded>
+                    <Tag v-else-if="task.priority === 2" value="Medium" severity="warning" :class="task.completed ? '!bg-gray-600' : ''" rounded>
                         <span class="text-[10px] sm:text-xs">Medium</span>
                     </Tag>
-                    <Tag v-else-if="task.priority === 3" value="High" severity="danger" rounded>
+                    <Tag v-else-if="task.priority === 3" value="High" severity="danger" :class="task.completed ? '!bg-gray-600' : ''" rounded>
                         <span class="text-[10px] sm:text-xs">High</span>
                     </Tag>
 
                     <!-- Due Date -->
-                    <Tag icon="pi pi-calendar" class="!bg-orange-600" rounded>
+                    <Tag icon="pi pi-calendar" :class="task.completed ? '!bg-gray-600' : '!bg-orange-600'" rounded>
                         <span class="text-[10px] sm:text-xs">{{ task?.dueDate.toLocaleDateString('en-GB') }}</span>
                     </Tag>
                 </div>
             </div>
 
             <!-- Buttons -->
-            <!-- <MqResponsive target="sm-md"> -->
-                <div class="">
-                    <div class="flex gap-1 flex-row">
-                        <Button @click="taskEditDialogVisible = true" outlined icon="pi pi-pencil" size="small"></Button>
-                        <Button outlined icon="pi pi-trash" @click="deleteDialogFunc(taskId)" severity="danger" size="small"></Button>
-                    </div>
+
+            <div class="">
+                <div class="flex gap-1 flex-row">
+                    <Button @click="taskEditDialogVisible = true" outlined icon="pi pi-pencil" :class="task.completed ? '!text-gray-600 !border-gray-600' : ''" size="small" :disabled="task.completed"></Button>
+                    <Button icon="pi pi-trash" @click="deleteDialogFunc(taskId)" outlined severity="danger"
+                        size="small"></Button>
                 </div>
-            <!-- </MqResponsive> -->
-            <!-- <MqResponsive target="sm-">
-                <SplitButton class="self-end" label="Edit" :model="otherOptions" @click="taskEditDialogVisible = true">
-                    <i class="pi pi-pencil"></i>
-                </SplitButton>
-            </MqResponsive> -->
+            </div>
         </div>
     </div>
 </template>
