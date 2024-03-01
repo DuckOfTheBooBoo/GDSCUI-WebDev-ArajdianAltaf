@@ -31,6 +31,7 @@ const groups: Group[] = reactive<Group[]>([])
 
 
 const addGroupFormVisible = ref(false)
+const currentDate = ref(new Date())
 
 let formValues = undefined
 if (task) {
@@ -45,8 +46,7 @@ if (task) {
 
 const formSchema = yup.object({
   title: yup.string().min(5, 'Title must be at least 5 characters').required('Title is required'),
-  // TODO: Implement minimum date
-  dueDate: yup.date().required('Due date is required'),
+  dueDate: yup.date().required('Due date is required').min(currentDate.value, 'Due date must be in the future. Unless you\'re a time traveler...'),
   description: yup.string().nullable(),
   priority: yup.string().required('Priority is required').oneOf(['1', '2', '3'], 'Invalid priority id'),
   group: yup.string().required('Group is required')
@@ -140,7 +140,6 @@ onMounted(() => {
             <small v-if="Boolean(errors.title)" class="text-red-500 mt-1">{{ errors.title }}</small>
           </Transition>
 
-          <!-- TODO: Implement minimum date -->
           <Calendar class="shadow-lg" v-model="dueDate" :manualInput="false" showButtonBar showIcon iconDisplay="input"
             placeholder="Due date" :invalid="Boolean(errors.dueDate)" />
           <Transition name="fade">
