@@ -13,8 +13,6 @@ import Group from './models/Group';
 import Toast from 'primevue/toast'
 import { ref, Ref, reactive, onMounted, computed } from 'vue';
 import { GROUPS_UPDATED, TASKS_UPDATED } from './constants'
-// @ts-ignore
-import { MqResponsive } from 'vue3-mq'
 
 const todoStore = useTodoStore()
 

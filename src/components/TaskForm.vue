@@ -79,8 +79,6 @@ const groupTag = (groupId: number): Group | undefined => {
 const formTitle = props.addNew ? 'Add Task' : 'Edit Task'
 
 const onSubmit = handleSubmit((values) => {
-  console.log('Submitted with', values)
-
   // Add new task
   if (props.addNew) {
     const task: TaskFormData = {
@@ -92,7 +90,6 @@ const onSubmit = handleSubmit((values) => {
     }
 
     const newTaskId = todoStore.addTask(task)
-    console.log(`Successfully added new task id: ${newTaskId}`)
     toast.add({severity: 'success', summary: `Successfully added new task id: ${newTaskId}`, life: 1000})
   } else {
     // Edit task
@@ -107,7 +104,6 @@ const onSubmit = handleSubmit((values) => {
     }
 
     todoStore.updateTask(updatedTask)
-    console.log(`Successfully updated task ${props.taskId}`)
     toast.add({severity: 'success', summary: `Successfully updated task ${props.taskId}`, life: 1000})
   }
 

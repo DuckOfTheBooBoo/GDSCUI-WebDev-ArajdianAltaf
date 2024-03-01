@@ -14,16 +14,10 @@ const todoStore = useTodoStore()
 let task: Task = reactive({} as Task)
 if (task) {
     task = todoStore.getTask(props.taskId)!
-} else {
-    console.log('Task is undefined', task)
 }
 
 const taskGroup: Ref<Group> = ref({} as Group)
 taskGroup.value =  todoStore.getGroup(task.group)!
-
-if (!taskGroup.value) {
-    console.log('taskGroup is undefined', taskGroup.value)
-}
 
 </script>
 

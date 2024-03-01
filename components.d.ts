@@ -7,11 +7,20 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AddGroupForm: typeof import('./src/components/AddGroupForm.vue')['default']
     Button: typeof import('primevue/button')['default']
+    Calendar: typeof import('primevue/calendar')['default']
     Chip: typeof import('primevue/chip')['default']
+    Dialog: typeof import('primevue/dialog')['default']
+    InputText: typeof import('primevue/inputtext')['default']
+    SelectButton: typeof import('primevue/selectbutton')['default']
+    SplitButton: typeof import('primevue/splitbutton')['default']
     SubTask: typeof import('./src/components/SubTask.vue')['default']
+    Tag: typeof import('primevue/tag')['default']
     TaskDetail: typeof import('./src/components/TaskDetail.vue')['default']
+    TaskForm: typeof import('./src/components/TaskForm.vue')['default']
     TaskGroup: typeof import('./src/components/TaskGroup.vue')['default']
     TaskItem: typeof import('./src/components/TaskItem.vue')['default']
+    Textarea: typeof import('primevue/textarea')['default']
   }
 }

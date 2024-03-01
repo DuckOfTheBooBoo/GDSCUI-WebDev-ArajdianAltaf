@@ -22,15 +22,10 @@ const props = defineProps<{
 const todoStore = useTodoStore()
 
 const task: Task = reactive({} as Task)
-// if (task) {
 Object.assign(task, todoStore.getTask(props.taskId)!)
 
 const taskGroup: Group = reactive<Group>({} as Group)
 Object.assign(taskGroup, todoStore.getGroup(task.group)!)
-
-// if (!taskGroup.value) {
-//     console.log('taskGroup is undefined', taskGroup.value)
-// }
 
 const taskDetailDialogVisible = ref(false)
 const taskEditDialogVisible = ref(false)
@@ -65,7 +60,6 @@ todoStore.eventEmitter.on(TASKS_UPDATED, () => {
 
 <template>
     <div class="">
-        <!-- TODO: Make it responsive -->
         <!-- Detail -->
         <Dialog class="" :style="{ width: '70%', maxWidth: '70%' }"
             v-model:visible="taskDetailDialogVisible" modal>

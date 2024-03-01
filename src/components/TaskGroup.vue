@@ -8,7 +8,6 @@ import Filter from '../models/Filter';
 import { useConfirm } from 'primevue/useconfirm';
 import ConfirmDialog from 'primevue/confirmdialog';
 
-// import 'animate.css'
 import { TASKS_UPDATED } from '../constants';
 
 const props: Filter = defineProps<Filter>()
@@ -34,9 +33,7 @@ let tasks: Task[] = reactive([] as Task[])
 const todoStore = useTodoStore()
 
 const fetchTasks = () => {
-    console.log('Fetching task...')
     const newTasks = todoStore.getAllTasks()
-    console.log(newTasks)
     tasks.splice(0, tasks.length, ...newTasks)
 }
 
@@ -111,8 +108,6 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
                 break
             }
         }
-    } else {
-        console.log('Sort is null', todoTasks)
     }
 
     return todoTasks.filter(task => {
@@ -123,13 +118,11 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
 
         // Check if theres no active filter
         if (!hasActiveFilter) {
-            console.log('Has no active filter')
             return true
         }
 
         // Check if task.group is equal to selectedFilter.group
         if ((selectedFilter.group !== null && selectedFilter.group !== 0) && task.group !== selectedFilter.group) {
-            console.log('Group didn\'t match')
             return false
         }
         
@@ -137,7 +130,6 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
             return false
         }
 
-        console.log('All filter passed')
         return true;
     })
 }
