@@ -35,6 +35,19 @@ Object.assign(taskGroup, todoStore.getGroup(task.group)!)
 const taskDetailDialogVisible = ref(false)
 const taskEditDialogVisible = ref(false)
 
+const getDueDaysRemaining = (dueDate: Date): number => {
+    const miliSecDiff = dueDate.getTime() - new Date().getTime();
+
+    if (miliSecDiff < 0) {
+        return 0;
+    }
+
+    const dayDiff = Math.floor(miliSecDiff / (1000 * 60 * 60 * 24)); // Correct calculation
+    return dayDiff + 1
+}
+
+const dueInDays = computed(() => getDueDaysRemaining(task.dueDate))
+
 todoStore.eventEmitter.on(TASKS_UPDATED, () => {
     const updatedTask = todoStore.getTask(props.taskId)
     
@@ -93,7 +106,15 @@ todoStore.eventEmitter.on(TASKS_UPDATED, () => {
 
                     <!-- Due Date -->
                     <Tag icon="pi pi-calendar" :class="task.completed ? '!bg-gray-600' : '!bg-orange-600'" rounded>
-                        <span class="text-[10px] sm:text-xs">{{ task?.dueDate.toLocaleDateString('en-GB') }}</span>
+                        <span v-if="dueInDays === 0" class="text-[10px] sm:text-xs">Due: Today</span>
+                        <span v-else-if="dueInDays < 10" class="text-[10px] sm:text-xs">
+                            Due: {{ dueInDays }}
+                            <span v-if="dueInDays === 1">day</span>
+                            <span v-else>days</span>
+                        </span>
+                        <span v-else class="text-[10px] sm:text-xs">
+                            {{ task.dueDate ? task.dueDate.toLocaleDateString('en-GB') : '' }}
+                        </span>
                     </Tag>
                 </div>
             </div>
