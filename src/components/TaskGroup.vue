@@ -92,7 +92,7 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
                         return 1
                     }
                     return  0
-                })
+                }).reverse()
                 break
             }
             case 'title-desc': {
@@ -104,7 +104,7 @@ const filterAndSortTasks = (tasks: Task[], selectedFilter: Filter): Task[] => {
                         return 1
                     }
                     return  0
-                }).reverse()
+                })
                 break
             }
         }
