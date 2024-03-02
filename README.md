@@ -1,4 +1,6 @@
 # GDSCUI-WebDev-ArajdianAltaf
+[Site demo](https://duckofthebooboo.github.io/GDSCUI-WebDev-ArajdianAltaf/)
+
 Name: Arajdian Altaf
 
 ## Features > Task Management
